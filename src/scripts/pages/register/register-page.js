@@ -1,7 +1,12 @@
+import { hideNavbarAndFooter } from "../../utils/auth";
+import RegisterPresenter from "./register-presenter";
 export default class RegisterPage {
+  #presenterPage = null;
   async render() {
     return `
-      <section class="container text-center text-lg-start ">
+      <section class="container text-center text-lg-start" style="padding-top: 8rem;
+    width: 100vw;
+    height: 50vw;">
         <div class="card mb-3 shadow p-3 bg-white rounded">
             <div class="row g-0">
 
@@ -62,10 +67,8 @@ export default class RegisterPage {
   }
 
   async afterRender({ Swal }) {
-    // hapus navbar
-    const navbar = document.querySelector("nav.navbar");
-    navbar.style.opacity = "0";
-    console.log(navbar);
+    // hapus navbar dan footer
+    hideNavbarAndFooter();
 
     //   click button
     document.addEventListener("click", (event) => {
@@ -94,6 +97,24 @@ export default class RegisterPage {
             return;
           }
         });
+        // end
+
+        // jika terisi semua
+        if (isValid) {
+          const data = {
+            username: username.value,
+            email: email.value,
+            password: password.value,
+            password2: password2.value,
+          };
+
+          // kirimkan ke bagian presenter
+          this.#presenterPage = new RegisterPresenter({
+            registerPage: this,
+          });
+
+          this.#presenterPage.sendDataToAPI(data);
+        }
       }
     });
   }

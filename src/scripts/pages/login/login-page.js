@@ -1,8 +1,12 @@
+import { hideNavbarAndFooter } from "../../utils/auth";
+
 export default class LoginPage {
   async render() {
     return `
     <!--Section Login-->
-      <section id='login' class="container text-center text-lg-start ">
+      <section id='login' class="container text-center text-lg-start" style='padding-top: 8rem;
+    width: 100vw;
+    height: 50vw;'>
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded">
             <div class="row g-0">
 
@@ -14,7 +18,7 @@ export default class LoginPage {
                         </div>
                         <form>
                             <h3 class="poppins-bold" style="color: #b57547;">Login Akun</h3>
-                            <!-- Email input -->
+                            <!-- username input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="form2Example1">Username</label>
                                 <input type="text" id="username" class="form-control">
@@ -49,9 +53,36 @@ export default class LoginPage {
     `;
   }
 
-  async afterRender() {
-    // hapus navbar
-    const navbar = document.querySelector("nav.navbar");
-    navbar.style.opacity = "0";
+  async afterRender({ Swal }) {
+    // hapus navbar dan footer
+    hideNavbarAndFooter();
+
+    //   click button
+    document.addEventListener("click", (event) => {
+      if (event.target.id === "masukButton") {
+        const username = document.querySelector("#username");
+        const password = document.querySelector("#password");
+
+        const inputs = [username, password];
+        let isValid = true;
+
+        // validasi input
+        inputs.forEach((input) => {
+          if (!isValid) {
+            return;
+          }
+
+          if (input.value.trim() === "") {
+            Swal.fire({
+              icon: "error",
+              title: "Terjadi Kesalahan!",
+              text: "Semua input harus diisi!",
+            });
+            isValid = false;
+            return;
+          }
+        });
+      }
+    });
   }
 }

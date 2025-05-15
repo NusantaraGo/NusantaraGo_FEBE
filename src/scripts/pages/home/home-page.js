@@ -8,6 +8,8 @@ export default class HomePage {
   }
 
   async afterRender() {
-    // Do your job here
+    // tampilkan navbar
+    const navbar = document.querySelector("nav.navbar");
+    navbar.style.opacity = "1";
   }
 }
