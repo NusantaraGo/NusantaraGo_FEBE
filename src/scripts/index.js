@@ -1,6 +1,10 @@
-// CSS imports
+// swallfire
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
+// bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // termasuk Popper.js
+// CSS imports
 import "../styles/styles.css";
 
 import App from "./pages/app";
@@ -8,8 +12,7 @@ import App from "./pages/app";
 document.addEventListener("DOMContentLoaded", async () => {
   const app = new App({
     content: document.querySelector("#main-content"),
-    drawerButton: document.querySelector("#drawer-button"),
-    navigationDrawer: document.querySelector("#navigation-drawer"),
+    alert: Swal,
   });
   await app.renderPage();
 
