@@ -16,7 +16,7 @@ export default class RegisterPage {
                             <!-- Username input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="username">Username</label>
-                                <input type="text" id="username" class="form-control" placeholder="Masukkan username">
+                                <input type="text" id="username" class="form-control" placeholder="Masukkan username" required>
                             </div>
 
                             <!-- Email input -->
@@ -38,7 +38,7 @@ export default class RegisterPage {
                             </div>
 
                             <!-- Submit button -->
-                            <button type="button" id="registerButton" class="btn btn-signup col-12 mt-3" onclick="register()">
+                            <button type="button" id="registerButton" class="btn btn-signup col-12 mt-3">
                                 Daftar
                             </button>
                             <hr>
@@ -61,9 +61,39 @@ export default class RegisterPage {
     `;
   }
 
-  async afterRender() {
+  async afterRender({ Swal }) {
     // hapus navbar
     const navbar = document.querySelector("nav.navbar");
     navbar.style.opacity = "0";
+
+    //   click button
+    document.addEventListener("click", (event) => {
+      if (event.target.id === "registerButton") {
+        const username = document.querySelector("#username");
+        const email = document.querySelector("#email");
+        const password = document.querySelector("#password");
+        const password2 = document.querySelector("#password2");
+
+        const inputs = [username, email, password, password2];
+        let isValid = true;
+
+        // validasi input
+        inputs.forEach((input) => {
+          if (!isValid) {
+            return;
+          }
+
+          if (input.value.trim() === "") {
+            Swal.fire({
+              icon: "error",
+              title: "Terjadi Kesalahan!",
+              text: "Semua input harus diisi!",
+            });
+            isValid = false;
+            return;
+          }
+        });
+      }
+    });
   }
 }
