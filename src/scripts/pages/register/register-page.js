@@ -65,6 +65,7 @@ export default class RegisterPage {
     // hapus navbar
     const navbar = document.querySelector("nav.navbar");
     navbar.style.opacity = "0";
+    console.log(navbar);
 
     //   click button
     document.addEventListener("click", (event) => {
