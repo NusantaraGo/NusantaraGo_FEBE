@@ -1,28 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="favicon.png">
 
-    <title>App</title>
-  </head>
-  <body>
-    <header>
-      <div class="main-header container">
-        <a class="brand-name" href="#/">App</a>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Favicon dasar -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-        <nav id="navigation-drawer" class="navigation-drawer">
-          <ul id="nav-list" class="nav-list">
-            <li><a href="#/">Beranda</a></li>
-            <li><a href="#/about">About</a></li>
-          </ul>
-        </nav>
+  <!-- Apple Touch Icon (iOS) -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        <button id="drawer-button" class="drawer-button">☰</button>
+  <!-- Android Chrome -->
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+  <!-- Web Manifest (PWA Support) -->
+  <link rel="manifest" href="/site.webmanifest">
+
+  <title>NusantaraGo</title>
+</head>
+
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="./images/logo.png" width="100%" height="70px" alt="navbar-logo.png">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/pencarian">Pencarian</a>
+          </li>
+
+        </ul>
+
+        <!-- Login -->
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item d-flex gap-2">
+            <a class="nav-link active btn" aria-current="page" href="#/register">Daftar</a>
+            <a class="btn btn-custom" aria-current="page" href="#/login">Masuk</a>
+          </li>
+        </ul>
       </div>
-    </header>
+    </div>
+  </nav>
 
-    <main id="main-content" class="main-content"></main>
-  </body>
+  <main id="main-content" class="main-content"></main>
+
+  <!-- footer -->
+  <footer class="bd-footer mt-5">
+    <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
+      <div class="row ">
+        <div class="col-lg-6 mb-3">
+          <a class="d-inline-flex align-items-center mb-2 text-body-emphasis text-decoration-none" href="/"
+            aria-label="Bootstrap">
+            <img src="images/logo.png" width="auto" height="70px" alt="logo">
+          </a>
+          <ul class="list-unstyled small">
+            <li class="mb-2" style="font-size: 18px;">NusantaraGo memudahkan wisatawan menemukan destinasi terbaik di
+              Indonesia. Jelajahi Nusantara tanpa bingung menentukan
+              tujuan! </li>
+          </ul>
+        </div>
+        <div class="col-lg-3 mb-5">
+          <h5>Menu</h5>
+          <ul class="list-unstyled menu">
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="#/">Home</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="#/pencarian">Pencarian</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-3 mb-3">
+          <h5>Kontak</h5>
+          <ul class="list-unstyled menu">
+            <li class="mb-2">0815-7562-5353</li>
+            <li class="mb-2">NusantaraGo@gmail.com </li>
+            <li class="mb-2">ig : NusantaraGo</li>
+            <li class="mb-2">tiktok : NusantaraGo official</li>
+            <li class="mb-2">service.NusantaraGo@mail.com</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- end -->
+</body>
+
 </html>
