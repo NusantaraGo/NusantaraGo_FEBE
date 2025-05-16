@@ -73,3 +73,5 @@ starter-project/
    ![Preview](src/public/tutorial/video-1.gif)
    
 2. Melakukan merge repository
+
+   ![Preview](src/public/tutorial/video-2.gif)
