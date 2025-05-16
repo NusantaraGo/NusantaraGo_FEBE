@@ -70,8 +70,8 @@ starter-project/
 ## Tutorial merge dari main ke branch yang dipilih 
 1. Melakukan clone repository dulu
 
-   ![Demo](src\public\tutorial\video-1.gif)
+   ![Preview](src/public/tutorial/video-1.gif)
    
 2. Melakukan merge repository
 
-   ![Demo](src\public\tutorial\video-2.gif)
+   ![Preview](src/public/tutorial/video-2.gif)
