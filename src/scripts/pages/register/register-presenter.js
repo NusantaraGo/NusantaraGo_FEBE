@@ -4,5 +4,7 @@ class RegisterPresenter {
     this.#registerPage = registerPage;
   }
 
-  sendDataToApi(data) {}
+  sendDataToApi(data) {
+    // TODO
+  }
 }
