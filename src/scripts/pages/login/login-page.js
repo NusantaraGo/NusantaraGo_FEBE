@@ -1,6 +1,9 @@
+import { errorHandling } from "../../utils";
 import { hideNavbarAndFooter } from "../../utils/auth";
+import LoginPresenter from "./login-presenter";
 
 export default class LoginPage {
+  #presenterPage = null;
   async render() {
     return `
     <!--Section Login-->
@@ -21,13 +24,13 @@ export default class LoginPage {
                             <!-- username input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="form2Example1">Username</label>
-                                <input type="text" id="username" class="form-control">
+                                <input type="text" id="username" class="form-control" required>
                             </div>
 
                             <!-- Password input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="form2Example2">Password</label>
-                                <input type="password" id="password" class="form-control">
+                                <input type="password" id="password" class="form-control" required>
                             </div>
 
                             <!-- Submit button -->
@@ -53,7 +56,7 @@ export default class LoginPage {
     `;
   }
 
-  async afterRender({ Swal }) {
+  async afterRender() {
     // hapus navbar dan footer
     hideNavbarAndFooter();
 
@@ -71,18 +74,47 @@ export default class LoginPage {
           if (!isValid) {
             return;
           }
-
+          // jika kosong
           if (input.value.trim() === "") {
-            Swal.fire({
-              icon: "error",
-              title: "Terjadi Kesalahan!",
-              text: "Semua input harus diisi!",
-            });
+            errorHandling(
+              "Terjadi Kesalahan!",
+              `input ${input.id} harus diisi!`
+            );
             isValid = false;
             return;
           }
         });
+
+        // jika terisi semua
+        if (isValid) {
+          const data = {
+            username: username.value.trim(),
+            password: password.value,
+          };
+
+          // kirimkan ke bagian presenter
+          this.#presenterPage = new LoginPresenter({
+            loginPage: this,
+          });
+          // kirim kan keapi melalui presenter
+          if (this.#presenterPage) this.#presenterPage.sendDataToAPI(data);
+        }
       }
     });
+  }
+
+  async errorHandlerFetch(error) {
+    if (error.code === "ECONNABORTED") {
+      errorHandling(
+        "Timeout Error!",
+        "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
+      );
+    } else {
+      if (error.status && error.status === 400) {
+        errorHandling("Bad Request!", error.message);
+      } else {
+        errorHandling("Error!", error.message);
+      }
+    }
   }
 }

@@ -5,23 +5,44 @@ export async function getData() {
   return await fetchResponse.json();
 }
 
+async function validateData(data_json, header_json, timeout, params) {
+  if (typeof data_json !== "object" || Array.isArray(data_json)) {
+    throw new TypeError("data_json harus berupa objek JSON.");
+  }
+
+  if (typeof header_json !== "object" || Array.isArray(header_json)) {
+    throw new TypeError("header_json harus berupa objek header.");
+  }
+
+  if (typeof timeout !== "number") {
+    throw new TypeError("timeout harus berupa angka (milidetik).");
+  }
+
+  if (timeout < 0) {
+    throw new RangeError("timeout tidak boleh negatif.");
+  }
+
+  if (!params.includes("/")) {
+    throw new Error("params tidak mengandung /");
+  }
+}
+
 export async function postData(
   data_json,
   header_json = {
     "Content-Type": "application/json",
   },
-  timeout = 5000
+  timeout = 10000, // 10 detik
+  params = "/"
 ) {
   try {
-    const response = await axios.post(process.env.BASE_URL, data_json, {
+    await validateData(data_json, header_json, timeout, params);
+    const response = await axios.post(`${CONFIG.API_URL}${params}`, data_json, {
       headers: header_json,
       timeout: timeout,
     });
-    return response.data;
+    return response.json();
   } catch (error) {
-    if (error.code === "ECONNABORTED") {
-      throw new Error("Request timeout");
-    }
     throw error;
   }
 }

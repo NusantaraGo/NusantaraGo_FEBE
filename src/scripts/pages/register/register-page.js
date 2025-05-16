@@ -1,3 +1,4 @@
+import { errorHandling } from "../../utils";
 import { hideNavbarAndFooter } from "../../utils/auth";
 import RegisterPresenter from "./register-presenter";
 export default class RegisterPage {
@@ -75,7 +76,7 @@ export default class RegisterPage {
     return email.endsWith("@gmail.com");
   }
 
-  async afterRender({ Swal }) {
+  async afterRender() {
     // hapus navbar dan footer
     hideNavbarAndFooter();
 
@@ -96,12 +97,12 @@ export default class RegisterPage {
             return;
           }
 
+          // jika kosong
           if (input.value.trim() === "") {
-            Swal.fire({
-              icon: "error",
-              title: "Terjadi Kesalahan!",
-              text: `input ${input.id} harus diisi!`,
-            });
+            errorHandling(
+              "Terjadi Kesalahan!",
+              `input ${input.id} harus diisi!`
+            );
             isValid = false;
             return;
           }
@@ -110,12 +111,8 @@ export default class RegisterPage {
 
         // cek email
         if (isValid) {
-          if (!isValidEmail(email.value.trim())) {
-            Swal.fire({
-              icon: "error",
-              title: "Terjadi Kesalahan!",
-              text: "Email tidak valid!",
-            });
+          if (!this.isValidEmail(email.value.trim())) {
+            errorHandling("Terjadi Kesalahan!", "Email tidak valid!");
             isValid = false;
           }
         }
@@ -124,11 +121,10 @@ export default class RegisterPage {
         // password check with confirm password check
         if (isValid) {
           if (password.value !== password2.value) {
-            Swal.fire({
-              icon: "error",
-              title: "Terjadi Kesalahan!",
-              text: "Password dan Konfirmasi Password wajib sama!",
-            });
+            errorHandling(
+              "Terjadi Kesalahan!",
+              "Password dan Konfirmasi Password wajib sama!"
+            );
             isValid = false;
           }
         }
@@ -148,9 +144,25 @@ export default class RegisterPage {
             registerPage: this,
           });
 
+          // kirim kan keapi melalui presenter
           this.#presenterPage.sendDataToAPI(data);
         }
       }
     });
+  }
+
+  async errorHandlerFetch(error) {
+    if (error.code === "ECONNABORTED") {
+      errorHandling(
+        "Timeout Error!",
+        "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
+      );
+    } else {
+      if (error.status && error.status === 400) {
+        errorHandling("Bad Request!", error.message);
+      } else {
+        errorHandling("Error!", error.message);
+      }
+    }
   }
 }

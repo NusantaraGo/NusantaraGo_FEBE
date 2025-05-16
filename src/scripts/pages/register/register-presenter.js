@@ -13,9 +13,16 @@ class RegisterPresenter {
    */
   async sendDataToAPI(data) {
     try {
-      const response = await postData(data);
+      const response = await postData(
+        data,
+        undefined,
+        undefined,
+        "/auth/register"
+      );
       console.log(response); //tampilan response dari fecth
-    } catch (error) {}
+    } catch (error) {
+      await this.#registerPage.errorHandlerFetch(error);
+    }
   }
 }
 
