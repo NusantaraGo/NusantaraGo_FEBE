@@ -1,5 +1,5 @@
 const CONFIG = {
-  BASE_URL: 'API_BASE_URL',
+  BASE_URL: "", //pakai base url dari api ke database
 };
 
 export default CONFIG;

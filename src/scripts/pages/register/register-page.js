@@ -27,19 +27,19 @@ export default class RegisterPage {
                             <!-- Email input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="email">Email</label>
-                                <input type="email" id="email" class="form-control" placeholder="Masukkan email">
+                                <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
                             </div>
 
                             <!-- Password input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="password">Password</label>
-                                <input type="password" id="password" class="form-control" placeholder="Masukkan password">
+                                <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
                             </div>
 
                             <!-- Konfirmasi Password input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="password2">Konfirmasi Password</label>
-                                <input type="password" id="password2" class="form-control" placeholder="Masukkan Konfirmasi password">
+                                <input type="password" id="password2" class="form-control" placeholder="Masukkan Konfirmasi password" required>
                             </div>
 
                             <!-- Submit button -->
@@ -64,6 +64,15 @@ export default class RegisterPage {
         </div>
     </section>
     `;
+  }
+
+  /**
+   * Validate email address to check if it's a valid Gmail account.
+   * @param {string} email - The email address to validate.
+   * @returns {boolean} True if the email is a valid Gmail account, false otherwise.
+   */
+  isValidEmail(email) {
+    return email.endsWith("@gmail.com");
   }
 
   async afterRender({ Swal }) {
@@ -91,7 +100,7 @@ export default class RegisterPage {
             Swal.fire({
               icon: "error",
               title: "Terjadi Kesalahan!",
-              text: "Semua input harus diisi!",
+              text: `input ${input.id} harus diisi!`,
             });
             isValid = false;
             return;
@@ -99,11 +108,37 @@ export default class RegisterPage {
         });
         // end
 
+        // cek email
+        if (isValid) {
+          if (!isValidEmail(email.value.trim())) {
+            Swal.fire({
+              icon: "error",
+              title: "Terjadi Kesalahan!",
+              text: "Email tidak valid!",
+            });
+            isValid = false;
+          }
+        }
+        // end
+
+        // password check with confirm password check
+        if (isValid) {
+          if (password.value !== password2.value) {
+            Swal.fire({
+              icon: "error",
+              title: "Terjadi Kesalahan!",
+              text: "Password dan Konfirmasi Password wajib sama!",
+            });
+            isValid = false;
+          }
+        }
+        // end
+
         // jika terisi semua
         if (isValid) {
           const data = {
-            username: username.value,
-            email: email.value,
+            username: username.value.trim(),
+            email: email.value.trim(),
             password: password.value,
             password2: password2.value,
           };
