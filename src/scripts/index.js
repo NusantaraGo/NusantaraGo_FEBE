@@ -1,6 +1,3 @@
-// swallfire
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import "sweetalert2/src/sweetalert2.scss";
 // bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // termasuk Popper.js
@@ -12,7 +9,6 @@ import App from "./pages/app";
 document.addEventListener("DOMContentLoaded", async () => {
   const app = new App({
     content: document.querySelector("#main-content"),
-    alert: Swal,
   });
   await app.renderPage();
 

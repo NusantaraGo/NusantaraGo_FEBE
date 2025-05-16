@@ -5,12 +5,10 @@ import { getActivePathname } from "../routes/url-parser";
 
 class App {
   #content = null;
-  #alert = null;
   #currentPath;
 
-  constructor({ content, alert }) {
+  constructor({ content }) {
     this.#content = content;
-    this.#alert = alert;
   }
 
   async renderPage() {
@@ -28,7 +26,7 @@ class App {
        */
       updateDOM: async () => {
         this.#content.innerHTML = await page.render();
-        await page.afterRender({ Swal: this.#alert });
+        await page.afterRender();
       },
     });
     // transisition sudah terupdate berhasil
