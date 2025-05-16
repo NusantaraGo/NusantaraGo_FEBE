@@ -66,3 +66,12 @@ starter-project/
 ├── webpack.dev.js          # Webpack development configuration
 └── webpack.prod.js         # Webpack production configuration
 ```
+
+## Tutorial merge dari main ke branch yang dipilih 
+1. Melakukan clone repository dulu
+
+   ![Preview](src/public/tutorial/video-1.gif)
+   
+2. Melakukan merge repository
+
+   ![Preview](src/public/tutorial/video-2.gif)
