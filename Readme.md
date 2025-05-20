@@ -17,7 +17,7 @@ Proyek ini adalah setup dasar untuk aplikasi web yang menggunakan webpack untuk 
 
 ### Installation
 
-1. Download starter project [di sini](https://raw.githubusercontent.com/dicodingacademy/a219-web-intermediate-labs/099-shared-files/starter-project-with-webpack.zip).
+1. Download starter project [di sini](https://github.com/NusantaraGo/NusantaraGO_Frontend/tree/main).
 2. Lakukan unzip file.
 3. Pasang seluruh dependencies dengan perintah berikut.
    ```shell
