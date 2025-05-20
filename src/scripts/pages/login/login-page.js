@@ -84,8 +84,9 @@ export default class LoginPage {
             return;
           }
         });
-
+        
         // jika terisi semua
+
         if (isValid) {
           const data = {
             username: username.value.trim(),
