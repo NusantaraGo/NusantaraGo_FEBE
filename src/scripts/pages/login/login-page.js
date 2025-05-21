@@ -85,7 +85,7 @@ export default class LoginPage {
           }
         });
 
-        // jika terisi semuas
+        // jika terisi semua
         if (isValid) {
           const data = {
             username: username.value.trim(),
