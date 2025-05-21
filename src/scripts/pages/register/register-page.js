@@ -1,3 +1,4 @@
+import { errorHandling } from "../../utils";
 import { hideNavbarAndFooter } from "../../utils/auth";
 import RegisterPresenter from "./register-presenter";
 export default class RegisterPage {
@@ -27,19 +28,19 @@ export default class RegisterPage {
                             <!-- Email input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="email">Email</label>
-                                <input type="email" id="email" class="form-control" placeholder="Masukkan email">
+                                <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
                             </div>
 
                             <!-- Password input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="password">Password</label>
-                                <input type="password" id="password" class="form-control" placeholder="Masukkan password">
+                                <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
                             </div>
 
                             <!-- Konfirmasi Password input -->
                             <div class="form-outline mb-3">
                                 <label class="form-label" for="password2">Konfirmasi Password</label>
-                                <input type="password" id="password2" class="form-control" placeholder="Masukkan Konfirmasi password">
+                                <input type="password" id="password2" class="form-control" placeholder="Masukkan Konfirmasi password" required>
                             </div>
 
                             <!-- Submit button -->
@@ -66,7 +67,16 @@ export default class RegisterPage {
     `;
   }
 
-  async afterRender({ Swal }) {
+  /**
+   * Validate email address to check if it's a valid Gmail account.
+   * @param {string} email - The email address to validate.
+   * @returns {boolean} True if the email is a valid Gmail account, false otherwise.
+   */
+  isValidEmail(email) {
+    return email.endsWith("@gmail.com");
+  }
+
+  async afterRender() {
     // hapus navbar dan footer
     hideNavbarAndFooter();
 
@@ -87,23 +97,44 @@ export default class RegisterPage {
             return;
           }
 
+          // jika kosong
           if (input.value.trim() === "") {
-            Swal.fire({
-              icon: "error",
-              title: "Terjadi Kesalahan!",
-              text: "Semua input harus diisi!",
-            });
+            errorHandling(
+              "Terjadi Kesalahan!",
+              `input ${input.id} harus diisi!`
+            );
             isValid = false;
             return;
           }
         });
         // end
 
+        // cek email
+        if (isValid) {
+          if (!this.isValidEmail(email.value.trim())) {
+            errorHandling("Terjadi Kesalahan!", "Email tidak valid!");
+            isValid = false;
+          }
+        }
+        // end
+
+        // password check with confirm password check
+        if (isValid) {
+          if (password.value !== password2.value) {
+            errorHandling(
+              "Terjadi Kesalahan!",
+              "Password dan Konfirmasi Password wajib sama!"
+            );
+            isValid = false;
+          }
+        }
+        // end
+
         // jika terisi semua
         if (isValid) {
           const data = {
-            username: username.value,
-            email: email.value,
+            username: username.value.trim(),
+            email: email.value.trim(),
             password: password.value,
             password2: password2.value,
           };
@@ -113,9 +144,25 @@ export default class RegisterPage {
             registerPage: this,
           });
 
+          // kirim kan keapi melalui presenter
           this.#presenterPage.sendDataToAPI(data);
         }
       }
     });
+  }
+
+  async errorHandlerFetch(error) {
+    if (error.code === "ECONNABORTED") {
+      errorHandling(
+        "Timeout Error!",
+        "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
+      );
+    } else {
+      if (error.status && error.status === 400) {
+        errorHandling("Bad Request!", error.message);
+      } else {
+        errorHandling("Error!", error.message);
+      }
+    }
   }
 }
