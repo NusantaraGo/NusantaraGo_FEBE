@@ -84,7 +84,7 @@ export default class LoginPage {
             return;
           }
         });
-        
+
         // jika terisi semua
 
         if (isValid) {
