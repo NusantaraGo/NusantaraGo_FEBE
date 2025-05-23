@@ -1,9 +1,6 @@
-import HomePresenter from './home-presenter.js'
+import { visibleNavbarAndFooter } from "../../utils/auth";
 
-  class HomePage {
-  constructor() {
-    this.presenter = new HomePresenter();
-  }
+export default class HomePage {
   async render() {
     return `
       <section class="container py-5">
@@ -64,13 +61,16 @@ import HomePresenter from './home-presenter.js'
             </div>
           </div>
         </div>
-      </section>
     `;
   }
 
   async afterRender() {
+
     await this.presenter.afterRender();
+
+    // tampilkan navbar
+    visibleNavbarAndFooter();
   }
 }
 
-export default HomePage
+
