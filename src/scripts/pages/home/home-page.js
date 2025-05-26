@@ -3,15 +3,15 @@ import { visibleNavbarAndFooter } from "../../utils/auth";
 export default class HomePage {
   async render() {
     return `
-      <section class="container py-5">
+     <section class="container py-5">
         <div class="row align-items-center">
           <div class="col-md-6">
-            <h1 class="fw-bold display-5">Spend Wisely<br>during Vacation to <span class="text-primary">Bali</span></h1>
+            <h1 class="fw-bold display-5">Jelajahi Keindahan Lokal Indonesia dengan <span style="color: #3b5941;">NusantaraGO</span> !</h1>
             <p class="mt-3 fs-5">
               NusantaraGo memudahkan wisatawan menemukan destinasi terbaik di Indonesia. 
               Jelajahi Nusantara tanpa bingung menentukan tujuan!
             </p>
-            <button id="explore-button" class="btn btn-dark btn-lg mt-3">Mulai Eksplorasi</button>
+            <a id="explore-button" class="btn btn-lg mt-3" style="background-color: #3b5941; color: white;" href="#/pencarian">Mulai Eksplorasi</a>
           </div>
           <div class="col-md-6 text-center mt-4 mt-md-0">
             <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="Bali Sunset" class="img-fluid rounded shadow" style="max-height: 350px;">
@@ -21,7 +21,7 @@ export default class HomePage {
 
       <section class="bg-light py-5">
         <div class="container">
-          <h2 class="fw-bold text-center mb-5">Kenapa Pilih <span class="text-primary">NusantaraGO?</span></h2>
+          <h2 class="fw-bold text-center mb-5">Kenapa Pilih <span style="color: #3b5941;">NusantaraGO?</span></h2>
           <div class="row text-center g-4">
             <div class="col-md-4">
               <div class="p-4 shadow-sm rounded bg-white h-100">
@@ -47,20 +47,18 @@ export default class HomePage {
           </div>
 
           <div class="row text-center mt-5 g-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <img src="https://img.icons8.com/clouds/100/beach.png" />
               <p class="mt-2 fw-semibold">Nuansa Budaya Lokal</p>
             </div>
-            <div class="col-md-4">
-              <img src="https://img.icons8.com/color/100/hotel.png" />
-              <p class="mt-2 fw-semibold">Akomodasi Beragam & Unik</p>
-            </div>
-            <div class="col-md-4">
+    
+            <div class="col-md-6">
               <img src="https://img.icons8.com/color/100/google-maps-new.png" />
               <p class="mt-2 fw-semibold">Navigasi Mudah & Interaktif</p>
             </div>
           </div>
         </div>
+      </section>
     `;
   }
 

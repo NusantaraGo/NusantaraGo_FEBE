@@ -1,4 +1,4 @@
-export default class HomePresenter {
+class HomePresenter {
   constructor() {
     // Configuration object
     this.config = {
@@ -6,9 +6,6 @@ export default class HomePresenter {
         navbar: "nav.navbar",
         exploreButton: "#explore-button"
       },
-      routes: {
-        search: "#/pencarian"
-      }
     };
 
     // Bind context for event handlers
@@ -55,3 +52,5 @@ export default class HomePresenter {
     }
   }
 }
+
+export default HomePresenter;
