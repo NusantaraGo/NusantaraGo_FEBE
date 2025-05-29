@@ -8,14 +8,13 @@ class LoginPresenter {
 
   async sendDataToAPI(data) {
     try {
-      console.log(data);
       const response = await postData(
         data,
         undefined,
         undefined,
         "/auth/login"
       );
-      console.log(response); //tampilan response dari fecth
+      console.log("response=", response); //tampilan response dari fecth
     } catch (error) {
       await this.#loginPage.errorHandlerFetch(error);
     }

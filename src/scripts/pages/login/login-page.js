@@ -105,13 +105,16 @@ export default class LoginPage {
   }
 
   async errorHandlerFetch(error) {
+    console.log(error);
     if (error.code === "ECONNABORTED") {
       errorHandling(
         "Timeout Error!",
         "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
       );
     } else {
-      if (error.status && error.status === 400) {
+      if (error.response.status >= 400 && error.response.status < 500) {
+        errorHandling(error.response.data.error, error.response.data.message);
+      } else if (error.status && error.status === 400) {
         errorHandling("Bad Request!", error.message);
       } else {
         errorHandling("Error!", error.message);

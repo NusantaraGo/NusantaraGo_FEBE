@@ -41,7 +41,7 @@ module.exports = {
     }),
     // akses .env
     new Dotenv({
-      path: "./.env", // default sebenarnya, bisa dihilangkan
+      path: "/.env", // default sebenarnya, bisa dihilangkan
     }),
     // plugin lain...
     new webpack.ProvidePlugin({
