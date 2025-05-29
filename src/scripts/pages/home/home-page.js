@@ -1,6 +1,8 @@
 import { visibleNavbarAndFooter } from "../../utils/auth";
+import HomePresenter from "./home-presenter";
 
 export default class HomePage {
+  #presenterPage = null;
   async render() {
     return `
      <section class="container py-5">
@@ -63,12 +65,11 @@ export default class HomePage {
   }
 
   async afterRender() {
-
-    await this.presenter.afterRender();
-
     // tampilkan navbar
     visibleNavbarAndFooter();
+
+    this.#presenterPage = new HomePresenter({ homePage: this });
+
+    await this.#presenterPage.afterRender();
   }
 }
-
-

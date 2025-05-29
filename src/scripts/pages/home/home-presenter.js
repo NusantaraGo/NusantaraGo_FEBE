@@ -1,15 +1,21 @@
 class HomePresenter {
-  constructor() {
+  #homePage;
+  constructor({ homePage }) {
     // Configuration object
     this.config = {
+      routes: {
+        search: "#/pencarian",
+      },
       selectors: {
         navbar: "nav.navbar",
-        exploreButton: "#explore-button"
+        exploreButton: "#explore-button",
       },
     };
 
     // Bind context for event handlers
     this.handleNavigation = this.handleNavigation.bind(this);
+
+    this.#homePage = homePage;
   }
 
   async afterRender() {
@@ -20,7 +26,7 @@ class HomePresenter {
   handleNavbarOpacity() {
     const { navbar } = this.config.selectors;
     const navbarElement = document.querySelector(navbar);
-    
+
     if (navbarElement) {
       navbarElement.style.opacity = "1";
       navbarElement.style.transition = "opacity 0.3s ease-in-out";
@@ -32,7 +38,7 @@ class HomePresenter {
     const buttonElement = document.querySelector(exploreButton);
 
     if (!buttonElement) {
-      console.warn('Explore button element not found');
+      console.warn("Explore button element not found");
       return;
     }
 
@@ -46,7 +52,7 @@ class HomePresenter {
   cleanup() {
     const { exploreButton } = this.config.selectors;
     const buttonElement = document.querySelector(exploreButton);
-    
+
     if (buttonElement) {
       buttonElement.removeEventListener("click", this.handleNavigation);
     }
