@@ -82,72 +82,75 @@ export default class RegisterPage {
 
     //   click button
     document.addEventListener("click", (event) => {
-      if (event.target.id === "registerButton") {
-        const username = document.querySelector("#username");
-        const email = document.querySelector("#email");
-        const password = document.querySelector("#password");
-        const password2 = document.querySelector("#password2");
+      event.preventDefault();
+      //   if (event.target.id === "registerButton") {
+      //     const username = document.querySelector("#username");
+      //     const email = document.querySelector("#email");
+      //     const password = document.querySelector("#password");
+      //     const password2 = document.querySelector("#password2");
 
-        const inputs = [username, email, password, password2];
-        let isValid = true;
+      //     const inputs = [username, email, password, password2];
+      //     let isValid = true;
 
-        // validasi input
-        inputs.forEach((input) => {
-          if (!isValid) {
-            return;
-          }
+      //     // validasi input
+      //     inputs.forEach((input) => {
+      //       if (!isValid) {
+      //         return;
+      //       }
 
-          // jika kosong
-          if (input.value.trim() === "") {
-            errorHandling(
-              "Terjadi Kesalahan!",
-              `input ${input.id} harus diisi!`
-            );
-            isValid = false;
-            return;
-          }
-        });
-        // end
+      //       // jika kosong
+      //       if (input.value.trim() === "") {
+      //         errorHandling(
+      //           "Terjadi Kesalahan!",
+      //           `input ${input.id} harus diisi!`
+      //         );
+      //         isValid = false;
+      //         return;
+      //       }
+      //     });
+      //     // end
 
-        // cek email
-        if (isValid) {
-          if (!this.isValidEmail(email.value.trim())) {
-            errorHandling("Terjadi Kesalahan!", "Email tidak valid!");
-            isValid = false;
-          }
-        }
-        // end
+      //     // cek email
+      //     if (isValid) {
+      //       if (!this.isValidEmail(email.value.trim())) {
+      //         errorHandling("Terjadi Kesalahan!", "Email tidak valid!");
+      //         isValid = false;
+      //       }
+      //     }
+      //     // end
 
-        // password check with confirm password check
-        if (isValid) {
-          if (password.value !== password2.value) {
-            errorHandling(
-              "Terjadi Kesalahan!",
-              "Password dan Konfirmasi Password wajib sama!"
-            );
-            isValid = false;
-          }
-        }
-        // end
+      //     // password check with confirm password check
+      //     if (isValid) {
+      //       if (password.value !== password2.value) {
+      //         errorHandling(
+      //           "Terjadi Kesalahan!",
+      //           "Password dan Konfirmasi Password wajib sama!"
+      //         );
+      //         isValid = false;
+      //       }
+      //     }
+      //     // end
 
-        // jika terisi semua
-        if (isValid) {
-          const data = {
-            username: username.value.trim(),
-            email: email.value.trim(),
-            password: password.value,
-            password2: password2.value,
-          };
+      //     // jika terisi semua
+      //     if (isValid) {
+      //       const data = {
+      //         username: username.value.trim(),
+      //         email: email.value.trim(),
+      //         password: password.value,
+      //         password2: password2.value,
+      //       };
 
-          // kirimkan ke bagian presenter
-          this.#presenterPage = new RegisterPresenter({
-            registerPage: this,
-          });
+      //       // kirimkan ke bagian presenter
+      //       this.#presenterPage = new RegisterPresenter({
+      //         registerPage: this,
+      //       });
 
-          // kirim kan keapi melalui presenter
-          this.#presenterPage.sendDataToAPI(data);
-        }
-      }
+      //       // kirim kan keapi melalui presenter
+      //       this.#presenterPage.sendDataToAPI(data);
+      //     }
+      //   }
+      // percobaan ke verify otp
+      window.location.hash = "#/otp";
     });
   }
 
