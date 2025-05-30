@@ -16,8 +16,8 @@ class LoginPresenter {
       );
 
       await this.#loginPage.successHandlerFetch(response);
-      // langsung ke url login
-      window.location.replace("#/login");
+      // langsung ke url dashboard
+      window.location.replace("#/");
     } catch (error) {
       await this.#loginPage.errorHandlerFetch(error);
     }

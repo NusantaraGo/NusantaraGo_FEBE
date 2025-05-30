@@ -1,4 +1,4 @@
-import { postData } from "../../data/api";
+import { patchData } from "../../data/api";
 
 class OtpPresenter {
   #otpPage;
@@ -13,7 +13,7 @@ class OtpPresenter {
    */
   async sendDataToAPI(data) {
     try {
-      const response = await postData(
+      const response = await patchData(
         data,
         undefined,
         undefined,
@@ -21,8 +21,8 @@ class OtpPresenter {
       );
 
       await this.#otpPage.successHandlerFetch(response);
-      // langsung ke url dashboard
-      window.location.replace("#/");
+      // langsung ke url login
+      window.location.replace("#/login");
     } catch (error) {
       await this.#otpPage.errorHandlerFetch(error);
     }
