@@ -8,14 +8,16 @@ class LoginPresenter {
 
   async sendDataToAPI(data) {
     try {
-      console.log(data);
       const response = await postData(
         data,
         undefined,
         undefined,
         "/auth/login"
       );
-      console.log(response); //tampilan response dari fecth
+
+      await this.#loginPage.successHandlerFetch(response);
+      // langsung ke url login
+      window.location.replace("#/login");
     } catch (error) {
       await this.#loginPage.errorHandlerFetch(error);
     }

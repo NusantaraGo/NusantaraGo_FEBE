@@ -37,11 +37,18 @@ export async function postData(
 ) {
   try {
     await validateData(data_json, header_json, timeout, params);
-    const response = await axios.post(`${CONFIG.API_URL}${params}`, data_json, {
-      headers: header_json,
-      timeout: timeout,
-    });
-    return response.json();
+    const response = await axios.post(
+      `${CONFIG["API_URL"]}${params}`,
+      JSON.stringify(data_json),
+      {
+        headers: header_json,
+        timeout: timeout,
+        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
+      }
+    );
+    if (response.status <= 400) {
+      return response.data;
+    }
   } catch (error) {
     throw error;
   }

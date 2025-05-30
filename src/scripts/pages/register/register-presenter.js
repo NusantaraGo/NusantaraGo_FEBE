@@ -13,13 +13,29 @@ class RegisterPresenter {
    */
   async sendDataToAPI(data) {
     try {
+      // mendapatkan response dari post data di file
       const response = await postData(
         data,
         undefined,
         undefined,
         "/auth/register"
       );
-      console.log(response); //tampilan response dari fecth
+
+      // pemisahaan
+      const { email, otpExpiredAt } = response.data;
+
+      // Simpan waktu di session storage dengan key tertentu
+      sessionStorage.setItem(
+        "otpTime", // Key/Nama untuk data ini
+        JSON.stringify({
+          // Value yang disimpan (dikonversi ke string)
+          otpExpiredAt,
+        })
+      );
+
+      await this.#registerPage.successHandlerFetch(response);
+
+      window.location.replace("#/verify-otp/" + email);
     } catch (error) {
       await this.#registerPage.errorHandlerFetch(error);
     }
