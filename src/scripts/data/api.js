@@ -43,9 +43,12 @@ export async function postData(
       {
         headers: header_json,
         timeout: timeout,
+        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
       }
     );
-    return response;
+    if (response.status <= 400) {
+      return response.data;
+    }
   } catch (error) {
     throw error;
   }

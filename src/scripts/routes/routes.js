@@ -9,7 +9,7 @@ const routes = {
   "/pencarian": new PencarianPage(),
   "/login": new LoginPage(),
   "/register": new RegisterPage(),
-  "/otp": new OtpPage(),
+  "/verify-otp/:id": new OtpPage(),
 };
 
 export default routes;

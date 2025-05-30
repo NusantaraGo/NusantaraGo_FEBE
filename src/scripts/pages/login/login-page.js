@@ -1,4 +1,4 @@
-import { errorHandling } from "../../utils";
+import { errorHandling, successHandling } from "../../utils";
 import { hideNavbarAndFooter } from "../../utils/auth";
 import LoginPresenter from "./login-presenter";
 
@@ -19,7 +19,7 @@ export default class LoginPage {
                         <div class="text-center mb-3">
                             <img src="images/logo.png" style="width: 185px;" alt="logo">
                         </div>
-                        <form>
+                        <form id="loginForm">
                             <h3 class="poppins-bold" style="color: #b57547;">Login Akun</h3>
                             <!-- username input -->
                             <div class="form-outline mb-3">
@@ -34,7 +34,7 @@ export default class LoginPage {
                             </div>
 
                             <!-- Submit button -->
-                            <button type="button" id="masukButton" class="btn btn-login poppins-semibold col-12 mt-3">
+                            <button type="submit" id="masukButton" class="btn btn-login poppins-semibold col-12 mt-3">
                                 Login
                             </button>
                             <hr>
@@ -60,12 +60,14 @@ export default class LoginPage {
     // hapus navbar dan footer
     hideNavbarAndFooter();
 
-    //   click button
-    document.addEventListener("click", (event) => {
-      if (event.target.id === "masukButton") {
-        const username = document.querySelector("#username");
-        const password = document.querySelector("#password");
+    const loginForm = document.getElementById("loginForm");
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const masukButton = document.getElementById("masukButton");
 
+    // submit button
+    const handleSubmit = (event) => {
+      if (event.target.id === "masukButton") {
         const inputs = [username, password];
         let isValid = true;
 
@@ -101,24 +103,47 @@ export default class LoginPage {
           if (this.#presenterPage) this.#presenterPage.sendDataToAPI(data);
         }
       }
-    });
+    };
+    // Event listener untuk form submit (Enter)
+    loginForm.addEventListener("submit", handleSubmit);
+
+    // Event listener untuk klik tombol
+    masukButton.addEventListener("click", handleSubmit);
   }
 
   async errorHandlerFetch(error) {
-    console.log(error);
     if (error.code === "ECONNABORTED") {
       errorHandling(
         "Timeout Error!",
         "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
       );
     } else {
-      if (error.response.status >= 400 && error.response.status < 500) {
-        errorHandling(error.response.data.error, error.response.data.message);
-      } else if (error.status && error.status === 400) {
-        errorHandling("Bad Request!", error.message);
+      if (error.response) {
+        // Ambil detail dari response Axios
+        const errJson = {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          message: error.response.data.message,
+          error: error.response.data.error,
+        };
+
+        if (errJson.status >= 400) {
+          errorHandling(errJson.error, errJson.message);
+        }
       } else {
         errorHandling("Error!", error.message);
       }
+    }
+  }
+
+  async successHandlerFetch({
+    statusCode,
+    message_title,
+    detail_message,
+    error,
+  }) {
+    if (statusCode >= 200 && statusCode <= 400 && error === null) {
+      return await successHandling(message_title, detail_message);
     }
   }
 }

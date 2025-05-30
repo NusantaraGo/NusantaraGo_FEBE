@@ -29,7 +29,7 @@ function handlingMessage(icon = "success", title = "OOPS!", message) {
   Swal.fire({
     icon: icon,
     title: `${title}`,
-    text: message,
+    html: message,
   });
 }
 
@@ -47,8 +47,9 @@ export const errorHandling = (title, message) => {
  * @param {string} title - Judul pesan sukses.
  * @param {string} message - Isi pesan sukses yang ditampilkan.
  */
-export const successHandling = (title, message) => {
+export const successHandling = async (title, message) => {
   handlingMessage("success", title, message);
+  return;
 };
 
 /**

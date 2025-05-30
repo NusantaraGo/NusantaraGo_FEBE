@@ -14,7 +14,10 @@ class LoginPresenter {
         undefined,
         "/auth/login"
       );
-      console.log("response=", response); //tampilan response dari fecth
+
+      await this.#loginPage.successHandlerFetch(response);
+      // langsung ke url login
+      window.location.replace("#/login");
     } catch (error) {
       await this.#loginPage.errorHandlerFetch(error);
     }

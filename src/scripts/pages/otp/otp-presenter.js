@@ -13,8 +13,16 @@ class OtpPresenter {
    */
   async sendDataToAPI(data) {
     try {
-      const response = await postData(data, undefined, undefined, "/auth/otp");
-      console.log(response); //tampilan response dari fecth
+      const response = await postData(
+        data,
+        undefined,
+        undefined,
+        "/auth/verify-otp"
+      );
+
+      await this.#otpPage.successHandlerFetch(response);
+      // langsung ke url dashboard
+      window.location.replace("#/");
     } catch (error) {
       await this.#otpPage.errorHandlerFetch(error);
     }
