@@ -131,7 +131,7 @@ export default class RegisterPage {
         // jika terisi semua
         if (isValid) {
           const data = {
-            username: username.value.trim(),
+            username: username.value.trim().toLowerCase(),
             email: email.value.trim(),
             password: password.value,
             password2: password2.value,
@@ -150,7 +150,7 @@ export default class RegisterPage {
   }
 
   async errorHandlerFetch(error) {
-    console.log(error);
+    console.error(error);
     if (error.code === "ECONNABORTED") {
       errorHandling(
         "Timeout Error!",
