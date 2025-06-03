@@ -53,3 +53,30 @@ export async function postData(
     throw error;
   }
 }
+
+export async function patchData(
+  data_json,
+  header_json = {
+    "Content-Type": "application/json",
+  },
+  timeout = 10000, // 10 detik
+  params = "/"
+) {
+  try {
+    await validateData(data_json, header_json, timeout, params);
+    const response = await axios.patch(
+      `${CONFIG["API_URL"]}${params}`,
+      JSON.stringify(data_json),
+      {
+        headers: header_json,
+        timeout: timeout,
+        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
+      }
+    );
+    if (response.status <= 400) {
+      return response.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+}

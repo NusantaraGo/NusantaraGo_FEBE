@@ -91,7 +91,7 @@ export default class LoginPage {
 
         if (isValid) {
           const data = {
-            username: username.value.trim(),
+            username: username.value.trim().toLowerCase(),
             password: password.value,
           };
 
