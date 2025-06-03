@@ -134,48 +134,8 @@ export default class OtpPage {
     hideNavbarAndFooter();
     // Tangkap form dan elements
     const otpForm = document.querySelector("form");
-    const verifikasiButton = document.getElementById("verifikasiOtpButton");
     const display = document.getElementById("countdown_time_otp");
     const titleTime = display.previousElementSibling;
-
-    // ambil dari session storage dan dapatkan otp expired at
-    const otpTime = sessionStorage.getItem("otpTime");
-    // cek ada atau tidak
-    if (!otpTime) {
-      display.textContent = "00:00";
-      return;
-    }
-    const otpExpiredAt = JSON.parse(otpTime).otpExpiredAt;
-
-    // buat remaining detik
-    const now = new Date();
-    const expiredDate = new Date(otpExpiredAt);
-    const remainingSeconds = Math.floor((expiredDate - now) / 1000);
-
-    // Mulai countdown
-    this.startOtpCountdown(remainingSeconds, display, () => {
-      display.innerHTML =
-        "Kode anda sudah kadaluarsa. <a href='#/register'>Daftar ulang</a>";
-      display.classList.add("text-muted");
-      titleTime.textContent = "Waktu Habis";
-
-      // ambil dan cheks params
-      const { searchParams, isValid } = this.checkSearchParams();
-
-      if (isValid) {
-        // // hapus session storage
-        // sessionStorage.removeItem("otpTime");
-
-        // buat data dan kirim ke backend
-        const data = {
-          searchParams: searchParams.trim(),
-          otp: "",
-        };
-        this.sendToBackend(data);
-      }
-
-      return;
-    });
 
     // submit button
     const handleSubmit = (event) => {
@@ -230,8 +190,44 @@ export default class OtpPage {
     // submit form
     otpForm.addEventListener("submit", handleSubmit);
 
-    // submit button
-    verifikasiButton.addEventListener("click", handleSubmit);
+    // ambil dari session storage dan dapatkan otp expired at
+    const otpTime = sessionStorage.getItem("otpTime");
+    // cek ada atau tidak
+    if (!otpTime) {
+      display.textContent = "00:00";
+      return;
+    }
+    const otpExpiredAt = JSON.parse(otpTime).otpExpiredAt;
+
+    // buat remaining detik
+    const now = new Date();
+    const expiredDate = new Date(otpExpiredAt);
+    const remainingSeconds = Math.floor((expiredDate - now) / 1000);
+
+    // Mulai countdown
+    this.startOtpCountdown(remainingSeconds, display, () => {
+      display.innerHTML =
+        "Kode anda sudah kadaluarsa. <a href='#/register'>Daftar ulang</a>";
+      display.classList.add("text-muted");
+      titleTime.textContent = "Waktu Habis";
+
+      // ambil dan cheks params
+      const { searchParams, isValid } = this.checkSearchParams();
+
+      if (isValid) {
+        // hapus session storage
+        sessionStorage.removeItem("otpTime");
+
+        // buat data dan kirim ke backend
+        const data = {
+          searchParams: searchParams.trim(),
+          otp: "",
+        };
+        this.sendToBackend(data);
+      }
+
+      return;
+    });
   }
 
   async errorHandlerFetch(error) {

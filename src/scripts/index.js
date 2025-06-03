@@ -1,6 +1,13 @@
 // bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // termasuk Popper.js
+
+// bootstrap icon
+import "bootstrap-icons/font/bootstrap-icons.css";
+
+// icon fontawesome
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 // CSS imports
 import "../styles/styles.css";
 

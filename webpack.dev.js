@@ -11,6 +11,10 @@ module.exports = merge(common, {
         use: ["style-loader", "css-loader"],
       },
       {
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        type: "asset/resource",
+      },
+      {
         test: /\.scss$/i,
         use: [
           "style-loader", // Inject CSS ke DOM
