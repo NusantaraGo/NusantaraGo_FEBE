@@ -11,6 +11,12 @@ export default class PencarianPage {
                     </h1>
                     <form id='pencarianForm' method="GET" class="search-form mt-4">
                         <div class="input-group" style="height: 50px;">
+                            <select id='category' class="form-select" aria-label="Select category for search">
+                              <option selected>Category</option>
+                              <option value="rating">Rating</option>
+                              <option value="location">Location</option>
+                              <option value="3">Three</option>
+                            </select>
                             <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan nama wisata...">
                             <button type="submit" class="btn btn-custom">Cari</button>
                         </div>

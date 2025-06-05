@@ -223,3 +223,21 @@
   > input[type="button"]:hover {
   background-color: var(--hover-button-color);
 }
+
+@media (min-width: 992px) {
+  .input-group > .form-control {
+    flex-grow: 4;
+  }
+}
+
+@media (min-width: 768px) {
+  .input-group > .form-select {
+    flex-grow: 0.2;
+  }
+}
+
+@media (min-width: 380px) {
+  .input-group > .form-select {
+    flex-grow: 0.5;
+  }
+}
