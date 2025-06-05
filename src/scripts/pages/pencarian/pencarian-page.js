@@ -9,9 +9,9 @@ export default class PencarianPage {
                     <h1 style="font-size: 36px; font-weight: 900">
                         Jelajahi Penginapan
                     </h1>
-                    <form action="/pencarian" method="GET" class="search-form mt-4">
+                    <form method="GET" class="search-form mt-4">
                         <div class="input-group" style="height: 50px;">
-                            <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan tempat wisata terdekat...">
+                            <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan nama wisata...">
                             <button type="submit" class="btn btn-custom">Cari</button>
                         </div>
                     </form>
