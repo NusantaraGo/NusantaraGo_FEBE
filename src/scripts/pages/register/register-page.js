@@ -6,9 +6,7 @@ export default class RegisterPage {
   #presenterPage = null;
   async render() {
     return `
-      <section class="container text-center text-lg-start" style="padding-top: 8rem;
-    width: 100vw;
-    height: 50vw;">
+      <section class="container text-center text-lg-start" style="padding-top: 8rem;">
         <div class="card mb-3 shadow p-3 bg-white rounded">
             <div class="row g-0">
 

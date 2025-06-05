@@ -123,10 +123,15 @@
 
 .navbar-nav .nav-link {
   font-size: 18px;
+  transition: color 0.5s ease-in-out;
 }
 
 .navbar-nav .nav-link:hover {
-  color: var(--main-color);
+  color: var(--hover-button-color);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--hover-button-color);
 }
 
 .navbar-collapse {
@@ -171,3 +176,50 @@
   transition: all 0.3s ease-in-out;
 }
 /* end */
+
+/* Pencarian */
+/* pagination style */
+.paginationjs.paginationjs-theme-system .paginationjs-pages li {
+  border-color: var(--main-color);
+}
+
+.paginationjs.paginationjs-theme-system .paginationjs-pages li > a {
+  color: var(--main-color);
+}
+
+.paginationjs.paginationjs-theme-system .paginationjs-pages li > a:hover {
+  background: var(--hover-button-color);
+  color: #fff;
+}
+
+.paginationjs.paginationjs-theme-system .paginationjs-pages li.active > a {
+  background: var(--main-color);
+  color: #fff;
+}
+
+.paginationjs.paginationjs-theme-system
+  .paginationjs-pages
+  li.disabled
+  > a:hover {
+  background: 0 0;
+}
+.paginationjs.paginationjs-theme-system
+  .paginationjs-go-input
+  > input[type="text"],
+.paginationjs.paginationjs-theme-system .paginationjs-size-changer > select {
+  border-color: var(--main-color);
+}
+
+.paginationjs.paginationjs-theme-system
+  .paginationjs-go-button
+  > input[type="button"] {
+  background: var(--main-color);
+  border-color: var(--main-color);
+  color: #fff;
+}
+
+.paginationjs.paginationjs-theme-system
+  .paginationjs-go-button
+  > input[type="button"]:hover {
+  background-color: var(--hover-button-color);
+}

@@ -34,6 +34,8 @@
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
     "dotenv-webpack": "^8.1.0",
+    "jquery": "^3.7.1",
+    "paginationjs": "^2.6.0",
     "sweetalert2": "^11.21.0"
   }
 }

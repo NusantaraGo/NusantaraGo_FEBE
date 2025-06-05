@@ -5,7 +5,7 @@ export default class HomePage {
   #presenterPage = null;
   async render() {
     return `
-     <section class="container py-5">
+     <section class="container pb-5" style='padding-top:8rem;'>
         <div class="row align-items-center">
           <div class="col-md-6">
             <h1 class="fw-bold display-5">Jelajahi Keindahan Lokal Indonesia dengan <span style="color: #3b5941;">NusantaraGO</span> !</h1>
