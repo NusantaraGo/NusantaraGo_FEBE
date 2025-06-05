@@ -7,9 +7,7 @@ export default class LoginPage {
   async render() {
     return `
     <!--Section Login-->
-      <section id='login' class="container text-center text-lg-start" style='padding-top: 8rem;
-    width: 100vw;
-    height: 50vw;'>
+      <section id='login' class="container text-center text-lg-start" style='padding-top: 8rem;'>
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded">
             <div class="row g-0">
 

@@ -11,6 +11,9 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 // CSS imports
 import "../styles/styles.css";
 
+// pagination
+import "paginationjs/dist/pagination.css";
+
 import App from "./pages/app";
 
 document.addEventListener("DOMContentLoaded", async () => {
