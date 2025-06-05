@@ -108,7 +108,7 @@
 /* navbar */
 .navbar {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   z-index: 1000;
@@ -222,6 +222,70 @@
   .paginationjs-go-button
   > input[type="button"]:hover {
   background-color: var(--hover-button-color);
+}
+
+/*detail*/
+.detail-page-card {
+  background-color: #FFFBF5;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.detail-place-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-info-panel {
+  background-color: #ffffff;
+  height: 100%;
+}
+
+.place-name {
+  color: #3b5941;
+  font-weight: 700;
+  font-size: 2.2rem;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+}
+.rating-section .rating-value {
+  font-weight: 600;
+  color: #3b5941;
+  background-color: #f0f0f0;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+.rating-section .rating-value .bi-star-fill {
+  color: #F4A261;
+}
+.rating-section .review-count {
+  color: #777;
+}
+
+.category-section .badge {
+  font-size: 0.9em;
+  padding: 0.5em 0.8em;
+}
+
+.detail-section-title {
+  color: #3b5941;
+  font-weight: 600;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #F4A261;
+  display: inline-block;
+}
+
+.map-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 @media (min-width: 992px) {
