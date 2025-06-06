@@ -1,9 +1,42 @@
 import CONFIG from "../config";
 import axios from "axios";
-export async function getData() {
-  const fetchResponse = await fetch(ENDPOINTS.ENDPOINT);
-  return await fetchResponse.json();
+export async function getDataML(
+  timeout = 3000, // 3000 milidetik = 3 detik
+  params = "/"
+) {
+  try {
+    const response = await axios.get(`${CONFIG["ML_URL_API"]}${params}`, {
+      timeout: timeout,
+    });
+    if (response.status <= 400) {
+      return response.data;
+    } else {
+      throw new Error("Gagal mengambil data dari API.");
+    }
+  } catch (error) {
+    throw error;
+  }
 }
+
+// export async function validateImage(url) {
+//   try {
+//     const response = await axios.head(url, {
+//       headers: {
+//         "User-Agent":
+//           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+//         Accept:
+//           "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+//       },
+//       timeout: 3000, // hindari lama request
+//     });
+//     const contentType = response.headers["content-type"];
+//     return (
+//       response.status === 200 && contentType && contentType.startsWith("image/")
+//     );
+//   } catch (err) {
+//     throw err;
+//   }
+// }
 
 async function validateData(data_json, header_json, timeout, params) {
   if (typeof data_json !== "object" || Array.isArray(data_json)) {
@@ -38,7 +71,7 @@ export async function postData(
   try {
     await validateData(data_json, header_json, timeout, params);
     const response = await axios.post(
-      `${CONFIG["API_URL"]}${params}`,
+      `${CONFIG["AUTH_URL_API"]}${params}`,
       JSON.stringify(data_json),
       {
         headers: header_json,
@@ -65,7 +98,7 @@ export async function patchData(
   try {
     await validateData(data_json, header_json, timeout, params);
     const response = await axios.patch(
-      `${CONFIG["API_URL"]}${params}`,
+      `${CONFIG["AUTH_URL_API"]}${params}`,
       JSON.stringify(data_json),
       {
         headers: header_json,

@@ -1,6 +1,9 @@
 import { visibleNavbarAndFooter } from "../../utils/auth";
+import PencarianPresenter from "./pencarian-presenter";
+import { errorHandling, successHandling } from "../../utils";
 
 export default class PencarianPage {
+  #presenterPage = null;
   async render() {
     return `
       <section id='pencarian' class="container text-center text-lg-start" style='padding-top: 8rem;'>
@@ -25,7 +28,7 @@ export default class PencarianPage {
 
                 <div class="album py-5">
                     <div  class="container">
-                        <div id='data-container' class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="penginapan-container">
+                        <div id='penginapan-container' class="row g-3">
                             
                         </div>
 
@@ -46,31 +49,80 @@ export default class PencarianPage {
     return await this.getData(data);
   }
 
+  // async validateImage(img) {
+  //   console.log("jalan");
+  //   let validImage = "https://imageplaceholder.net/408x272?text=No+Image";
+  //   if (Array.isArray(img)) {
+  //     for (const url of img) {
+  //       const isValid = await this.#presenterPage.validateImagePresenter(url);
+  //       if (isValid) {
+  //         validImage = url;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   return validImage;
+  // }
+
   async renderTemplate(datas) {
+    function createStars(rating) {
+      let starsHTML = "";
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 !== 0;
+
+      for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<i class="fas fa-star"></i>';
+      }
+
+      if (hasHalfStar) {
+        starsHTML += '<i class="fas fa-star-half-alt"></i>';
+      }
+
+      const emptyStars = 5 - Math.ceil(rating);
+      for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<i class="far fa-star"></i>';
+      }
+
+      return starsHTML;
+    }
+
     // Generate HTML for current page items
     let html = "";
-    datas.forEach((item) => {
+    console.log(datas);
+    datas.forEach(async (item) => {
+      // let validImage = await this.validateImage(item.foto);
+
       html += `
-        <div class="col">
+        <div id="tour-${item.id}" class="col">
           <div class="card shadow">
             <div class="image">
-              <img src="${item.image}" class="card-img-top" alt="gambar">
+              <img src="https://imageplaceholder.net/600x400/eeeeee/131313?text=Your+Image" class="card-img-top" alt="gambar">
             </div>
             <div class="card-body">
-              <div class="kepala">
-                <button type="button" class="btn btn-outline-primary btn-sm" disabled="">
-                  ${item.location}
-                </button>
-                <small class="text-body-secondary">
-                  Tersedia <b style="color: red;">${item.rooms} kamar</b>
-                </small>
+              <h5 class="card-title text-justify text-truncate">${
+                item.nama
+              }</h5>
+              <p class="location-text">
+                  <i class="fas fa-map-marker-alt me-2"></i>${item.provinsi}
+              </p>
+              <p class="card-description">${item.deskripsi}</p>
+              <div class="rating-section">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="stars">${createStars(item.rating)}</span>
+                    <span class="rating-text">${item.rating}</span>
+                  </div>
+                  <span class="reviews-count">(${item.jumlah_review.toLocaleString()} ulasan)</span>
+                </div>
               </div>
-              <div class="deskripsi">
-                <h4 class="card-title-bold">${item.name}</h4>
-                <h6 class="d-flex">Harga: ${item.price}</h6>
-              </div>
-              <div class="d-flex justify-content-start mt-3">
-                <a href="${item.detailLink}" class="btn btn-custom">Detail</a>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center">
+                  <a id='button-cart' data-id='${
+                    item.id
+                  }' class="btn btn-custom">
+                      <i class="fas fa-calendar-check me-2"></i>Detail
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -83,80 +135,11 @@ export default class PencarianPage {
 
   async getData(data) {
     // Sample data for all accommodations
-    const allAccommodations = [
-      {
-        name: "Argo Villa",
-        price: "Rp 300000",
-        location: "Denpasar",
-        rooms: 8,
-        image: "/static/penginapan_images/argo_villa_penginapan.jpg",
-        detailLink: "/detail_customer/657f612b5faa5a9ff79fc9df",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-      {
-        name: "Asri Villa",
-        price: "Rp 400000",
-        location: "Kuta",
-        rooms: 12,
-        image: "/static/penginapan_images/asri_villa_penginapan.jpg",
-        detailLink: "/detail_customer/6580d7f9bea89c1d297e40bb",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-      {
-        name: "Bali Vill",
-        price: "Rp 300000",
-        location: "Pandawa",
-        rooms: 9,
-        image: "/static/penginapan_images/bali_vill_penginapan.jpg",
-        detailLink: "/detail_customer/6580d876bea89c1d297e40bc",
-      },
-    ];
+    this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
+    const allAccommodations = await this.#presenterPage.getAllAccomodations();
+    if (allAccommodations.length === 0) {
+      return false;
+    }
 
     return await this.calculateCurrentPages(allAccommodations, data);
   }
@@ -167,8 +150,43 @@ export default class PencarianPage {
     const startIndex = (data[0] - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentItems = datas.slice(startIndex, endIndex);
-
     return await this.renderTemplate(currentItems);
+  }
+
+  async errorHandlerFetch(error) {
+    if (error.code === "ECONNABORTED") {
+      errorHandling(
+        "Timeout Error!",
+        "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
+      );
+    } else {
+      if (error.response) {
+        // Ambil detail dari response Axios
+        const errJson = {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          message: error.response.data.message,
+          error: error.response.data.error,
+        };
+
+        if (errJson.status >= 400) {
+          errorHandling(errJson.error, errJson.message);
+        }
+      } else {
+        errorHandling("Error!", error.message);
+      }
+    }
+  }
+
+  async successHandlerFetch({
+    statusCode,
+    message_title,
+    detail_message,
+    error,
+  }) {
+    if (statusCode >= 200 && statusCode <= 400 && error === null) {
+      return await successHandling(message_title, detail_message);
+    }
   }
 
   async afterRender() {
@@ -190,8 +208,25 @@ export default class PencarianPage {
       callback: async (data, pagination) => {
         console.log(pagination, data);
         // template method of yourself
-        var html = await this.template(data);
-        $("#data-container").html(html);
+        let html = await this.template(data);
+        if (!html) {
+          html = `
+            <div class="col-12">
+              <div class="card shadow">
+                <div class="card-body text-center">
+                  <img class='mb-2' width="48" height="48" src="https://img.icons8.com/emoji/48/warning-emoji.png" alt="warning-emoji"/>
+                  <h4 class="card-title-bold">Data tidak ditemukan</h4>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          $("#penginapan-container").addClass(
+            "row-cols-1 row-cols-sm-2 row-cols-md-3"
+          );
+        }
+        $("#penginapan-container").html(html);
+        return;
       },
     });
   }

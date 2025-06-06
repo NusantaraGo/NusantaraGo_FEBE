@@ -223,21 +223,70 @@
   > input[type="button"]:hover {
   background-color: var(--hover-button-color);
 }
+/* end */
 
-@media (min-width: 992px) {
+/* card */
+
+.card-description {
+  color: #495057;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  text-align: justify;
+  display: -webkit-box;
+  -webkit-line-clamp: 6; /* Jumlah baris maksimum */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location-text {
+  color: #6c757d;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.rating-section {
+  margin-bottom: 1.5rem;
+}
+
+.stars {
+  color: #ffc107;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.rating-text {
+  font-weight: 600;
+  color: #495057;
+  margin-right: 0.5rem;
+}
+
+.reviews-count {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 380px) {
   .input-group > .form-control {
-    flex-grow: 4;
+    flex-grow: 1.5;
+  }
+}
+
+@media (min-width: 580px) {
+  .input-group > .form-control {
+    flex-grow: 3.5;
   }
 }
 
 @media (min-width: 768px) {
-  .input-group > .form-select {
-    flex-grow: 0.2;
+  .input-group > .form-control {
+    flex-grow: 6;
   }
 }
 
-@media (min-width: 380px) {
-  .input-group > .form-select {
-    flex-grow: 0.5;
+@media (min-width: 992px) {
+  .input-group > .form-control {
+    flex-grow: 8;
   }
 }
