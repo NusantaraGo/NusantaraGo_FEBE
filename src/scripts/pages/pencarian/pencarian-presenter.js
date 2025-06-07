@@ -6,9 +6,14 @@ class PencarianPresenter {
     this.#pencarianPage = pencarianPage;
   }
 
-  async getAllAccomodations() {
+  async getAllAccomodations(filteredData) {
+    const queryString = new URLSearchParams(filteredData).toString();
+    console.log(queryString);
     try {
-      const response = await getDataML(undefined, "/api/attractions");
+      const response = await getDataML(
+        undefined,
+        "/api/attractions?" + queryString
+      );
       return response;
     } catch (error) {
       await this.#pencarianPage.errorHandlerFetch(error);

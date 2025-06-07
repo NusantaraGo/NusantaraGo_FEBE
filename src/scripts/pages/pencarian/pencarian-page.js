@@ -4,41 +4,39 @@ import { errorHandling, successHandling } from "../../utils";
 
 export default class PencarianPage {
   #presenterPage = null;
+  #html = null;
   async render() {
     return `
-      <section id='pencarian' class="container text-center text-lg-start" style='padding-top: 8rem;'>
+      <section id='pencarian' class="container text-center text-lg-start" style='padding-top: 4rem;'>
         <div class="container">
                 <div class="jelajahi">
                     <h1 style="font-size: 36px; font-weight: 900">
                         Jelajahi Penginapan
                     </h1>
                     <form id='pencarianForm' method="GET" class="search-form mt-4 row">
-                      <div class="col-12 d-flex gap-2 mb-4" style="height: 50px;">
-                        <select id='groupBy' class="form-select w-25" aria-label="Select groupBy for search">
-                          <option selected>--groupBy--</option>
-                          <option value="provinces">Provinsi</option>
-                          <option value="categories">Kategori</option>
-                          <option value="min_rating">Rating</option>
+                      <div class="col-12 d-flex align-items-center gap-2 mb-4" style="height: 50px;">
+                        <select id='provinces' name='provinces' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
+                          <option selected>--provinsi--</option>
                         </select>
-                        <select id='resultBy' class="form-select w-25" disabled aria-label="Select groupBy for search">
-                          <option selected>--resultBy--</option>
+                        <select id='categories' name='categories' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
+                          <option selected>--kategori--</option>
                         </select>
+                        <input type="number" id="min_rating" name='min_rating' class="form-control poppins-regular" step="0.5" style="max-width:70px">
+                        <input type="range" class="form-range" min="0" max="5" step="0.1" id="customRange1">
                       </div>
                       <div class="input-group col-12" style="height: 50px;">
-                          <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan nama wisata...">
+                          <input type="text" id="pencarian" name='q' class="form-control poppins-regular" placeholder="Cari penginapan berdasarkan nama wisata...">
                           <button type="submit" class="btn btn-custom">Cari</button>
                       </div>
                     </form>
                 </div>
 
                 <div class="album py-5">
-                    <div  class="container">
+                    <div class="container">
+                        <!-- Add accommodations -->
                         <div id='penginapan-container' class="row g-3">
                             
                         </div>
-
-
-
                         <!-- Add pagination links -->
                         <div id='pagination-container' class="pagination justify-content-center mt-5">
                             
@@ -51,7 +49,7 @@ export default class PencarianPage {
   }
 
   async template(allAccommodations, data) {
-    return await this.sortedAccomodation(allAccommodations, data);
+    return await this.calculateCurrentPages(allAccommodations, data);
   }
 
   // async validateImage(img) {
@@ -144,25 +142,29 @@ export default class PencarianPage {
     return html;
   }
 
-  async renderResultBy(datas) {
-    let html = "";
-    datas.forEach(async (item) => {
-      html += `
-        <option value="${item}">${item.replace("_", " ")}</option>
-      `;
-    });
-    return html;
+  async toTitleCase(str) {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
-  async sortedAccomodation(allAccommodations, data) {
-    allAccommodations.sort((a, b) => a.nama.localeCompare(b.nama));
-    return await this.calculateCurrentPages(allAccommodations, data);
+  async renderOptionBy(datas) {
+    let html = "";
+    for (const item of datas) {
+      const label = await this.toTitleCase(item.replace(/_/g, " "));
+      html += `<option value="${item}">${label}</option>\n`;
+    }
+    return html;
   }
 
   async getData(groupBy = null) {
     // Sample data for all accommodations
     this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
-    const allAccommodations = await this.#presenterPage.getAllAccomodations();
+    const allAccommodations = await this.#presenterPage.getAllAccomodations(
+      groupBy
+    );
     if (allAccommodations.length === 0) {
       return false;
     }
@@ -172,8 +174,8 @@ export default class PencarianPage {
 
   async getGroupBy(data) {
     this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
-    const provinces = await this.#presenterPage.getGroupBy(data);
-    return provinces;
+    const values = await this.#presenterPage.getGroupBy(data);
+    return values;
   }
   async calculateCurrentPages(datas, data) {
     // Calculate the current page items (3 items per page)
@@ -184,6 +186,31 @@ export default class PencarianPage {
     return await this.renderTemplate(currentItems);
   }
 
+  submitTriggerEvent(event) {
+    event.preventDefault();
+
+    const form = event.target.closest("form");
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    if ("categories" in data && data?.categories === "--kategori--") {
+      data["categories"] = " ";
+    }
+
+    if ("provinces" in data && data?.["provinces"] === "--provinsi--") {
+      data["provinces"] = " ";
+    }
+
+    if ("q" in data && data?.["q"] === "") {
+      data["q"] = " ";
+    }
+
+    if ("min_rating" in data && data?.["min_rating"] === "") {
+      data["min_rating"] = " ";
+    }
+
+    return this.getData(data);
+  }
+
   async errorHandlerFetch(error) {
     if (error.code === "ECONNABORTED") {
       errorHandling(
@@ -192,6 +219,8 @@ export default class PencarianPage {
       );
     } else {
       if (error.response) {
+        console.log(error.response);
+
         // Ambil detail dari response Axios
         const errJson = {
           status: error.response.status,
@@ -229,27 +258,49 @@ export default class PencarianPage {
     window.jQuery = $;
     await require("paginationjs");
 
-    // menentukan group by dan meremve attr diabled di result by
-    $("#groupBy").on("change", async (event) => {
-      // remove option lainnya selain result by
-      $("#resultBy option:not(:first)").remove();
+    // konfigurasi provinsi
+    // ambil data provinsi
+    const provinces = await this.getGroupBy("provinces");
+    // konfigurasi untuk option
+    this.#html = await this.renderOptionBy(provinces);
+    // tambahkan option
+    $("#provinces").append(this.#html);
+    // emd
 
-      // jika target group by --groupBy--
-      if (event.target.value === "--groupBy--") {
-        $("#resultBy").val("--resultBy--");
-        $("#resultBy").attr("disabled", "true");
-        return;
-      }
-      // selain itu
-      const allProvinces = await this.getGroupBy(event.target.value);
-      const html = await this.renderResultBy(allProvinces);
-      $("#resultBy").append(html);
-      $("#resultBy").removeAttr("disabled");
+    // konfigurasi kategori
+    // ambil data kategori
+    const categories = await this.getGroupBy("categories");
+    // konfigurasi untuk option
+    this.#html = await this.renderOptionBy(categories);
+    // tambahkan option
+    $("#categories").append(this.#html);
+    // end
+
+    // konfigurasi rating
+    // Saat range diubah, update input number
+    $("#customRange1").on("input", function () {
+      $("#min_rating").val($(this).val());
     });
 
-    // ambil semua accomodation
-    const allAccommodations = await this.getData();
+    // Saat number diubah, update input range
+    $("#min_rating").on("input", function () {
+      let val = parseFloat($(this).val());
+      // Validasi agar dalam rentang 0–5
+      if (!isNaN(val) && val >= 0 && val <= 5) {
+        $("#customRange1").val(val);
+      }
+    });
+    // end
 
+    // konfigurasi submit
+    $("#pencarianForm").on("submit", (event) => this.submitTriggerEvent(event));
+    // end
+
+    // ambil semua accomodation jika tidak melakukan submit
+    const allAccommodations = await this.getData();
+    // end
+
+    // buat pagination
     $("#pagination-container").pagination({
       dataSource: Array.from(
         { length: Math.ceil(allAccommodations.length / 3) },
@@ -284,5 +335,6 @@ export default class PencarianPage {
         return;
       },
     });
+    // end
   }
 }

@@ -223,6 +223,7 @@
   > input[type="button"]:hover {
   background-color: var(--hover-button-color);
 }
+
 /*detail*/
 .detail-page-card {
   background-color: #fffbf5;
@@ -286,6 +287,24 @@
   overflow: hidden;
   border-radius: 8px;
 }
+/* end */
+
+/* form */
+#customRange1 {
+  -webkit-appearance: none; /* hilangkan gaya default */
+}
+
+/* Thumb (bulatan geser) */
+input[type="range"]::-webkit-slider-thumb {
+  background: var(--main-color);
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  margin-top: -7px; /* sesuaikan agar posisi thumb sejajar track */
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+/* end */
 
 /* card */
 
