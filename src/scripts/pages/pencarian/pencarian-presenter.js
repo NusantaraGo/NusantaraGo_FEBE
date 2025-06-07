@@ -16,9 +16,16 @@ class PencarianPresenter {
     }
   }
 
-  async getProvinces(data) {
+  async getGroupBy(data) {
     try {
-      const response = await getDataML(undefined, `/api/${data}`);
+      let response;
+      if (data === "min_rating") {
+        response = Array.from({ length: 9 }, (_, i) =>
+          (1 + i * 0.5).toString()
+        );
+      } else {
+        response = await getDataML(undefined, `/api/${data}`);
+      }
       return response;
     } catch (error) {
       await this.#pencarianPage.errorHandlerFetch(error);
