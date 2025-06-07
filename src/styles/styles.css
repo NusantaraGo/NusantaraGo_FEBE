@@ -328,27 +328,3 @@
   color: #6c757d;
   font-size: 0.9rem;
 }
-
-@media (min-width: 380px) {
-  .input-group > .form-control {
-    flex-grow: 1.5;
-  }
-}
-
-@media (min-width: 580px) {
-  .input-group > .form-control {
-    flex-grow: 3.5;
-  }
-}
-
-@media (min-width: 768px) {
-  .input-group > .form-control {
-    flex-grow: 6;
-  }
-}
-
-@media (min-width: 992px) {
-  .input-group > .form-control {
-    flex-grow: 8;
-  }
-}
