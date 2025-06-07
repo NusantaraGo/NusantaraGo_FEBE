@@ -17,8 +17,8 @@ export default class PencarianPage {
                         <select id='groupBy' class="form-select w-25" aria-label="Select groupBy for search">
                           <option selected>--groupBy--</option>
                           <option value="provinces">Provinsi</option>
-                          <option value="location">Location</option>
-                          <option value="3">Three</option>
+                          <option value="categories">Kategori</option>
+                          <option value="min_rating">Rating</option>
                         </select>
                         <select id='resultBy' class="form-select w-25" disabled aria-label="Select groupBy for search">
                           <option selected>--resultBy--</option>
@@ -144,11 +144,11 @@ export default class PencarianPage {
     return html;
   }
 
-  async renderProvinces(datas) {
+  async renderResultBy(datas) {
     let html = "";
     datas.forEach(async (item) => {
       html += `
-        <option value="${item}">${item}</option>
+        <option value="${item}">${item.replace("_", " ")}</option>
       `;
     });
     return html;
@@ -170,9 +170,9 @@ export default class PencarianPage {
     return allAccommodations;
   }
 
-  async getProvinces(data) {
+  async getGroupBy(data) {
     this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
-    const provinces = await this.#presenterPage.getProvinces(data);
+    const provinces = await this.#presenterPage.getGroupBy(data);
     return provinces;
   }
   async calculateCurrentPages(datas, data) {
@@ -231,9 +231,19 @@ export default class PencarianPage {
 
     // menentukan group by dan meremve attr diabled di result by
     $("#groupBy").on("change", async (event) => {
-      const allProvinces = await this.getProvinces(event.target.value);
-      const html = await this.renderProvinces(allProvinces);
-      $("#resultBy").html(html);
+      // remove option lainnya selain result by
+      $("#resultBy option:not(:first)").remove();
+
+      // jika target group by --groupBy--
+      if (event.target.value === "--groupBy--") {
+        $("#resultBy").val("--resultBy--");
+        $("#resultBy").attr("disabled", "true");
+        return;
+      }
+      // selain itu
+      const allProvinces = await this.getGroupBy(event.target.value);
+      const html = await this.renderResultBy(allProvinces);
+      $("#resultBy").append(html);
       $("#resultBy").removeAttr("disabled");
     });
 
