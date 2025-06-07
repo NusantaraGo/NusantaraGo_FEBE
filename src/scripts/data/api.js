@@ -2,10 +2,12 @@ import CONFIG from "../config";
 import axios from "axios";
 export async function getDataML(
   timeout = 3000, // 3000 milidetik = 3 detik
-  params = "/"
+  params = "/",
+  filteredData = null
 ) {
   try {
     const response = await axios.get(`${CONFIG["ML_URL_API"]}${params}`, {
+      params: filteredData,
       timeout: timeout,
     });
     if (response.status <= 400) {

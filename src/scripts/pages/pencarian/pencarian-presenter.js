@@ -7,12 +7,11 @@ class PencarianPresenter {
   }
 
   async getAllAccomodations(filteredData) {
-    const queryString = new URLSearchParams(filteredData).toString();
-    console.log(queryString);
     try {
       const response = await getDataML(
         undefined,
-        "/api/attractions?" + queryString
+        "/api/attractions",
+        filteredData
       );
       return response;
     } catch (error) {
