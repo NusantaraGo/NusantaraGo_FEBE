@@ -230,6 +230,9 @@ export default class PencarianPage {
         };
 
         if (errJson.status >= 400) {
+          if (!errJson.error) {
+            errJson.error = statusText;
+          }
           errorHandling(errJson.error, errJson.message);
         }
       } else {
