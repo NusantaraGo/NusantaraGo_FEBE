@@ -223,7 +223,7 @@ export default class PencarianPage {
         const errJson = {
           status: error.response.status,
           statusText: error.response.statusText,
-          message: error.response.data.message.replace("/_/g", " "),
+          message: error.response.data.message.replace("_", " "),
           error: error.response.data.error,
         };
 
