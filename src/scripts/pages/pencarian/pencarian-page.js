@@ -219,19 +219,17 @@ export default class PencarianPage {
       );
     } else {
       if (error.response) {
-        console.log(error.response);
-
         // Ambil detail dari response Axios
         const errJson = {
           status: error.response.status,
           statusText: error.response.statusText,
-          message: error.response.data.message,
+          message: error.response.data.message.replace("/_/g", " "),
           error: error.response.data.error,
         };
 
         if (errJson.status >= 400) {
           if (!errJson.error) {
-            errJson.error = statusText;
+            errJson.error = errJson.statusText;
           }
           errorHandling(errJson.error, errJson.message);
         }
