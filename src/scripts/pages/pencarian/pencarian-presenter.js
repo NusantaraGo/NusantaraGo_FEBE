@@ -16,6 +16,16 @@ class PencarianPresenter {
     }
   }
 
+  async getProvinces(data) {
+    try {
+      const response = await getDataML(undefined, `/api/${data}`);
+      return response;
+    } catch (error) {
+      await this.#pencarianPage.errorHandlerFetch(error);
+      return false;
+    }
+  }
+
   // async validateImagePresenter(url) {
   //   try {
   //     const response = await validateImage(url);

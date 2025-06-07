@@ -12,17 +12,22 @@ export default class PencarianPage {
                     <h1 style="font-size: 36px; font-weight: 900">
                         Jelajahi Penginapan
                     </h1>
-                    <form id='pencarianForm' method="GET" class="search-form mt-4">
-                        <div class="input-group" style="height: 50px;">
-                            <select id='category' class="form-select" aria-label="Select category for search">
-                              <option selected>Category</option>
-                              <option value="rating">Rating</option>
-                              <option value="location">Location</option>
-                              <option value="3">Three</option>
-                            </select>
-                            <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan nama wisata...">
-                            <button type="submit" class="btn btn-custom">Cari</button>
-                        </div>
+                    <form id='pencarianForm' method="GET" class="search-form mt-4 row">
+                      <div class="col-12 d-flex gap-2 mb-4" style="height: 50px;">
+                        <select id='groupBy' class="form-select w-25" aria-label="Select groupBy for search">
+                          <option selected>--groupBy--</option>
+                          <option value="provinces">Provinsi</option>
+                          <option value="location">Location</option>
+                          <option value="3">Three</option>
+                        </select>
+                        <select id='resultBy' class="form-select w-25" disabled aria-label="Select groupBy for search">
+                          <option selected>--resultBy--</option>
+                        </select>
+                      </div>
+                      <div class="input-group col-12" style="height: 50px;">
+                          <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan nama wisata...">
+                          <button type="submit" class="btn btn-custom">Cari</button>
+                      </div>
                     </form>
                 </div>
 
@@ -45,8 +50,8 @@ export default class PencarianPage {
     `;
   }
 
-  async template(data) {
-    return await this.getData(data);
+  async template(allAccommodations, data) {
+    return await this.sortedAccomodation(allAccommodations, data);
   }
 
   // async validateImage(img) {
@@ -65,6 +70,11 @@ export default class PencarianPage {
   // }
 
   async renderTemplate(datas) {
+    /**
+     * make rate star from rates item
+     * @param {*} rating
+     * @returns
+     */
     function createStars(rating) {
       let starsHTML = "";
       const fullStars = Math.floor(rating);
@@ -88,7 +98,6 @@ export default class PencarianPage {
 
     // Generate HTML for current page items
     let html = "";
-    console.log(datas);
     datas.forEach(async (item) => {
       // let validImage = await this.validateImage(item.foto);
 
@@ -103,9 +112,11 @@ export default class PencarianPage {
                 item.nama
               }</h5>
               <p class="location-text">
-                  <i class="fas fa-map-marker-alt me-2"></i>${item.provinsi}
+                  <span class="location-icon me-1">📍</span>${item.provinsi}
               </p>
-              <p class="card-description">${item.deskripsi}</p>
+              <p class="card-description" style='height:150px'>${
+                item.deskripsi
+              }</p>
               <div class="rating-section">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
@@ -133,7 +144,22 @@ export default class PencarianPage {
     return html;
   }
 
-  async getData(data) {
+  async renderProvinces(datas) {
+    let html = "";
+    datas.forEach(async (item) => {
+      html += `
+        <option value="${item}">${item}</option>
+      `;
+    });
+    return html;
+  }
+
+  async sortedAccomodation(allAccommodations, data) {
+    allAccommodations.sort((a, b) => a.nama.localeCompare(b.nama));
+    return await this.calculateCurrentPages(allAccommodations, data);
+  }
+
+  async getData(groupBy = null) {
     // Sample data for all accommodations
     this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
     const allAccommodations = await this.#presenterPage.getAllAccomodations();
@@ -141,9 +167,14 @@ export default class PencarianPage {
       return false;
     }
 
-    return await this.calculateCurrentPages(allAccommodations, data);
+    return allAccommodations;
   }
 
+  async getProvinces(data) {
+    this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
+    const provinces = await this.#presenterPage.getProvinces(data);
+    return provinces;
+  }
   async calculateCurrentPages(datas, data) {
     // Calculate the current page items (3 items per page)
     const itemsPerPage = 3;
@@ -198,8 +229,22 @@ export default class PencarianPage {
     window.jQuery = $;
     await require("paginationjs");
 
+    // menentukan group by dan meremve attr diabled di result by
+    $("#groupBy").on("change", async (event) => {
+      const allProvinces = await this.getProvinces(event.target.value);
+      const html = await this.renderProvinces(allProvinces);
+      $("#resultBy").html(html);
+      $("#resultBy").removeAttr("disabled");
+    });
+
+    // ambil semua accomodation
+    const allAccommodations = await this.getData();
+
     $("#pagination-container").pagination({
-      dataSource: Array.from({ length: 195 }, (_, i) => i + 1),
+      dataSource: Array.from(
+        { length: Math.ceil(allAccommodations.length / 3) },
+        (_, i) => i + 1
+      ),
       pageRange: 0,
       pageSize: 1,
       className: "paginationjs paginationjs-theme-system paginationjs-big",
@@ -208,7 +253,7 @@ export default class PencarianPage {
       callback: async (data, pagination) => {
         console.log(pagination, data);
         // template method of yourself
-        let html = await this.template(data);
+        let html = await this.template(allAccommodations, data);
         if (!html) {
           html = `
             <div class="col-12">
