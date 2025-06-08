@@ -103,6 +103,7 @@
   font-weight: 900;
   font-style: italic;
 }
+
 /* end */
 
 /* navbar */
@@ -151,6 +152,7 @@
   background-color: var(--hover-button-color);
   color: white;
 }
+
 /* end */
 
 /* login */
@@ -175,6 +177,124 @@
   color: white;
   transition: all 0.3s ease-in-out;
 }
+
+/* my profile */
+
+.card-custom {
+  max-width: 28rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: 0.3s all ease;
+}
+
+.card-custom:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.profile-header {
+  height: 8rem;
+  background: linear-gradient(to right, #a855f7, #ec4899);
+  position: relative;
+}
+
+.profile-img {
+  width: 96px;
+  height: 96px;
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.badge-custom {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 0.2rem rgba(168, 85, 247, 0.25);
+}
+
+.btn-primary-custom {
+  background: linear-gradient(to right, #a855f7, #ec4899);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.btn-secondary-custom {
+  background-color: #6b7280;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary-custom:hover {
+  background-color: #4b5563;
+  transform: translateY(-2px);
+}
+
+.input-group-text {
+  background-color: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-right: none;
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.input-group .form-control {
+  border-left: none;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.input-group:focus-within .input-group-text {
+  border-color: #a855f7;
+}
+
+.password-toggle {
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.3s ease;
+}
+
+.form-control:disabled {
+  background-color: #f8f9fa;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-group .form-control:disabled + .input-group-text,
+.input-group-text.disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  opacity: 0.6;
+}
+
 /* end */
 
 /* Pencarian */
