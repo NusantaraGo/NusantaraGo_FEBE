@@ -4,41 +4,44 @@ import { errorHandling, successHandling } from "../../utils";
 
 export default class PencarianPage {
   #presenterPage = null;
+  #html = null;
+  /**
+   * Render the Pencarian page HTML.
+   *
+   * @returns {string} The rendered HTML of Pencarian page.
+   */
   async render() {
     return `
-      <section id='pencarian' class="container text-center text-lg-start" style='padding-top: 8rem;'>
+      <section id='pencarian' class="container text-center text-lg-start" style='padding-top: 4rem;'>
         <div class="container">
                 <div class="jelajahi">
                     <h1 style="font-size: 36px; font-weight: 900">
                         Jelajahi Penginapan
                     </h1>
                     <form id='pencarianForm' method="GET" class="search-form mt-4 row">
-                      <div class="col-12 d-flex gap-2 mb-4" style="height: 50px;">
-                        <select id='groupBy' class="form-select w-25" aria-label="Select groupBy for search">
-                          <option selected>--groupBy--</option>
-                          <option value="provinces">Provinsi</option>
-                          <option value="categories">Kategori</option>
-                          <option value="min_rating">Rating</option>
+                      <div class="col-12 d-flex align-items-center gap-2 mb-4" style="height: 50px;">
+                        <select id='provinces' name='provinces' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
+                          <option selected>--provinsi--</option>
                         </select>
-                        <select id='resultBy' class="form-select w-25" disabled aria-label="Select groupBy for search">
-                          <option selected>--resultBy--</option>
+                        <select id='categories' name='categories' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
+                          <option selected>--kategori--</option>
                         </select>
+                        <input type="number" id="min_rating" name='min_rating' min="0" max="5" class="form-control poppins-regular" step="0.1" style="max-width:70px">
+                        <input type="range" class="form-range" min="0" max="5" step="0.1" id="customRange1">
                       </div>
                       <div class="input-group col-12" style="height: 50px;">
-                          <input type="text" name="pencarian" class="form-control" placeholder="Cari penginapan berdasarkan nama wisata...">
+                          <input type="text" id="pencarian" name='q' class="form-control poppins-regular" placeholder="Cari penginapan berdasarkan nama wisata...">
                           <button type="submit" class="btn btn-custom">Cari</button>
                       </div>
                     </form>
                 </div>
 
                 <div class="album py-5">
-                    <div  class="container">
+                    <div class="container">
+                        <!-- Add accommodations -->
                         <div id='penginapan-container' class="row g-3">
                             
                         </div>
-
-
-
                         <!-- Add pagination links -->
                         <div id='pagination-container' class="pagination justify-content-center mt-5">
                             
@@ -50,8 +53,14 @@ export default class PencarianPage {
     `;
   }
 
+  /**
+   * Function to generate HTML template for accommodations based on the given data
+   * @param {Array} allAccommodations - All accommodations data
+   * @param {Object} data - Data for the current page
+   * @returns {String} - HTML template for the accommodations
+   */
   async template(allAccommodations, data) {
-    return await this.sortedAccomodation(allAccommodations, data);
+    return await this.calculateCurrentPages(allAccommodations, data);
   }
 
   // async validateImage(img) {
@@ -68,6 +77,13 @@ export default class PencarianPage {
   //   }
   //   return validImage;
   // }
+
+  /**
+   * Renders HTML templates for a list of accommodations.
+   *
+   * @param {Array} datas - Array of accommodation data objects.
+   * @returns {Promise<string>} - A promise that resolves to the generated HTML string.
+   */
 
   async renderTemplate(datas) {
     /**
@@ -144,37 +160,76 @@ export default class PencarianPage {
     return html;
   }
 
-  async renderResultBy(datas) {
+  /**
+   * Convert a string to title case. This function takes a string and returns it
+   * with all words capitalized. It also replaces all underscores with spaces.
+   * @param {string} str - The string to convert to title case
+   * @returns {string} The title case string
+   */
+  async toTitleCase(str) {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
+  /**
+   * Generate HTML for dropdown options from given array of strings. It will
+   * convert each string to title case and replace all underscores with spaces.
+   * @param {string[]} datas - Array of strings to generate options from
+   * @returns {string} HTML string of options
+   */
+  async renderOptionBy(datas) {
     let html = "";
-    datas.forEach(async (item) => {
-      html += `
-        <option value="${item}">${item.replace("_", " ")}</option>
-      `;
-    });
+    for (const item of datas) {
+      const label = await this.toTitleCase(item.replace(/_/g, " "));
+      html += `<option value="${item}">${label}</option>\n`;
+    }
     return html;
   }
 
-  async sortedAccomodation(allAccommodations, data) {
-    allAccommodations.sort((a, b) => a.nama.localeCompare(b.nama));
-    return await this.calculateCurrentPages(allAccommodations, data);
-  }
-
+  /**
+   * Gets all accommodation data from API. If groupBy is provided, it will group
+   * the data by the given field.
+   * @param {string|null} groupBy - The field to group the data by. If not provided,
+   *     it will return all data ungrouped.
+   * @returns {Promise<Array|false>} - A promise that resolves to an array of
+   *     accommodation data objects if successful, or false if no data is found.
+   */
   async getData(groupBy = null) {
     // Sample data for all accommodations
     this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
-    const allAccommodations = await this.#presenterPage.getAllAccomodations();
-    if (allAccommodations.length === 0) {
+    const allAccommodations = await this.#presenterPage.getAllAccomodations(
+      groupBy
+    );
+
+    console.log(allAccommodations);
+    if (allAccommodations.length === 0 || !allAccommodations) {
       return false;
     }
 
     return allAccommodations;
   }
 
+  /**
+   * Gets all distinct values for the given field from the database.
+   * @param {string} data - The field to get distinct values for
+   * @returns {Promise<Array<string>|false>} - A promise that resolves to an array
+   *     of distinct values if successful, or false if no data is found.
+   */
   async getGroupBy(data) {
     this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
-    const provinces = await this.#presenterPage.getGroupBy(data);
-    return provinces;
+    const values = await this.#presenterPage.getGroupBy(data);
+    return values;
   }
+  /**
+   * Calculate the current page items (3 items per page) and render the
+   * template for the current page items.
+   * @param {Array} datas - All accommodations data
+   * @param {Array} data - Array of current page number, e.g. [1]
+   * @returns {Promise<string>} - HTML template for the current page items
+   */
   async calculateCurrentPages(datas, data) {
     // Calculate the current page items (3 items per page)
     const itemsPerPage = 3;
@@ -183,6 +238,104 @@ export default class PencarianPage {
     const currentItems = datas.slice(startIndex, endIndex);
     return await this.renderTemplate(currentItems);
   }
+
+  /**
+   * Creates a pagination on the given element, using the given array of
+   * accommodation data. If the data is empty, it will not create the
+   * pagination.
+   * @param {Array} allAccommodations - Array of all accommodations data
+   */
+  async handlePagination(allAccommodations) {
+    if (!allAccommodations || allAccommodations.length === 0) return;
+
+    // buat pagination
+    $("#pagination-container").pagination({
+      dataSource: Array.from(
+        { length: Math.ceil(allAccommodations.length / 3) },
+        (_, i) => i + 1
+      ),
+      pageRange: 0,
+      pageSize: 1,
+      className: "paginationjs paginationjs-theme-system paginationjs-big",
+      autoHidePrevious: true,
+      autoHideNext: true,
+      callback: async (data, pagination) => {
+        let html = await this.template(allAccommodations, data);
+        if (!html) {
+          html = `
+          <div class="col-12">
+            <div class="card shadow">
+              <div class="card-body text-center">
+                <img class='mb-2' width="48" height="48" src="https://img.icons8.com/emoji/48/warning-emoji.png" alt="warning-emoji"/>
+                <h4 class="card-title-bold">Data tidak ditemukan</h4>
+              </div>
+            </div>
+          </div>
+        `;
+        } else {
+          $("#penginapan-container").addClass(
+            "row-cols-1 row-cols-sm-2 row-cols-md-3"
+          );
+        }
+        $("#penginapan-container").html(html);
+      },
+    });
+    // end
+  }
+
+  /**
+   * Handles form submission event for search functionality. Prevents the default
+   * form submission behavior, extracts form data, and configures specific fields
+   * for processing. Converts 'categories' and 'provinces' fields to empty strings
+   * if they have default placeholder values. Returns processed data to be used
+   * for fetching accommodations data.
+   *
+   * @param {Event} event - The form submission event object.
+   * @returns {Promise<Array|false>} - A promise that resolves to an array of
+   *     accommodation data objects if successful, or false if no data is found.
+   */
+
+  async submitTriggerEvent(event) {
+    event.preventDefault();
+
+    const form = event.target.closest("form");
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    // konfigurasi categories menjadi string kosong
+    if ("categories" in data && data?.categories === "--kategori--") {
+      data["categories"] = "";
+    }
+
+    // konfigurasi categories menjadi string kosong
+    if ("provinces" in data && data?.["provinces"] === "--provinsi--") {
+      data["provinces"] = "";
+    }
+
+    const data_new = {
+      category: data?.categories,
+      province: data?.provinces,
+      min_rating: data?.min_rating,
+      q: data?.q,
+    };
+
+    return this.getData(data_new);
+  }
+
+  /**
+   * Handles errors that occur during data fetching operations. This function
+   * checks for specific error conditions such as request timeouts and
+   * HTTP response errors. Based on the error details, it displays appropriate
+   * error messages to the user using a custom error handling function.
+   *
+   * @param {Object} error - The error object provided by Axios when a request fails.
+   * @param {string} error.code - The error code, e.g., 'ECONNABORTED' for timeout errors.
+   * @param {Object} error.response - The response object from the server in case of HTTP errors.
+   * @param {number} error.response.status - The HTTP status code of the response.
+   * @param {string} error.response.statusText - The status text of the response.
+   * @param {Object} error.response.data - The data object containing error details from the server.
+   * @param {string} error.response.data.message - The error message from the server.
+   * @param {string} error.response.data.error - The error type or description from the server.
+   */
 
   async errorHandlerFetch(error) {
     if (error.code === "ECONNABORTED") {
@@ -196,11 +349,14 @@ export default class PencarianPage {
         const errJson = {
           status: error.response.status,
           statusText: error.response.statusText,
-          message: error.response.data.message,
+          message: error.response.data.message.replace("_", " "),
           error: error.response.data.error,
         };
 
         if (errJson.status >= 400) {
+          if (!errJson.error) {
+            errJson.error = errJson.statusText;
+          }
           errorHandling(errJson.error, errJson.message);
         }
       } else {
@@ -209,6 +365,19 @@ export default class PencarianPage {
     }
   }
 
+  /**
+   * Handles successful responses from data fetching operations. This function
+   * displays success messages to the user using a custom success handling
+   * function if the response status code is between 200 and 400 and there is
+   * no error.
+   *
+   * @param {Object} params - The object containing response details.
+   * @param {number} params.statusCode - The HTTP status code of the response.
+   * @param {string} params.message_title - The title of the success message.
+   * @param {string} params.detail_message - The detail message to be displayed.
+   * @param {Object} [params.error] - The error object provided by Axios when a request fails.
+   * @returns {Promise<void>}
+   */
   async successHandlerFetch({
     statusCode,
     message_title,
@@ -229,60 +398,49 @@ export default class PencarianPage {
     window.jQuery = $;
     await require("paginationjs");
 
-    // menentukan group by dan meremve attr diabled di result by
-    $("#groupBy").on("change", async (event) => {
-      // remove option lainnya selain result by
-      $("#resultBy option:not(:first)").remove();
+    // konfigurasi provinsi
+    // ambil data provinsi
+    const provinces = await this.getGroupBy("provinces");
+    // konfigurasi untuk option
+    this.#html = await this.renderOptionBy(provinces);
+    // tambahkan option
+    $("#provinces").append(this.#html);
+    // emd
 
-      // jika target group by --groupBy--
-      if (event.target.value === "--groupBy--") {
-        $("#resultBy").val("--resultBy--");
-        $("#resultBy").attr("disabled", "true");
-        return;
+    // konfigurasi kategori
+    // ambil data kategori
+    const categories = await this.getGroupBy("categories");
+    // konfigurasi untuk option
+    this.#html = await this.renderOptionBy(categories);
+    // tambahkan option
+    $("#categories").append(this.#html);
+    // end
+
+    // konfigurasi rating
+    // Saat range diubah, update input number
+    $("#customRange1").on("input", function () {
+      $("#min_rating").val($(this).val());
+    });
+
+    // Saat number diubah, update input range
+    $("#min_rating").on("input", function () {
+      let val = parseFloat($(this).val());
+      // Validasi agar dalam rentang 0–5
+      if (!isNaN(val) && val >= 0 && val <= 5) {
+        $("#customRange1").val(val);
       }
-      // selain itu
-      const allProvinces = await this.getGroupBy(event.target.value);
-      const html = await this.renderResultBy(allProvinces);
-      $("#resultBy").append(html);
-      $("#resultBy").removeAttr("disabled");
+    });
+    // end
+
+    // Bind event submit form
+    $("#pencarianForm").on("submit", async (event) => {
+      event.preventDefault();
+      const data = await this.submitTriggerEvent(event);
+      await this.handlePagination(data);
     });
 
-    // ambil semua accomodation
-    const allAccommodations = await this.getData();
-
-    $("#pagination-container").pagination({
-      dataSource: Array.from(
-        { length: Math.ceil(allAccommodations.length / 3) },
-        (_, i) => i + 1
-      ),
-      pageRange: 0,
-      pageSize: 1,
-      className: "paginationjs paginationjs-theme-system paginationjs-big",
-      autoHidePrevious: true,
-      autoHideNext: true,
-      callback: async (data, pagination) => {
-        console.log(pagination, data);
-        // template method of yourself
-        let html = await this.template(allAccommodations, data);
-        if (!html) {
-          html = `
-            <div class="col-12">
-              <div class="card shadow">
-                <div class="card-body text-center">
-                  <img class='mb-2' width="48" height="48" src="https://img.icons8.com/emoji/48/warning-emoji.png" alt="warning-emoji"/>
-                  <h4 class="card-title-bold">Data tidak ditemukan</h4>
-                </div>
-              </div>
-            </div>
-          `;
-        } else {
-          $("#penginapan-container").addClass(
-            "row-cols-1 row-cols-sm-2 row-cols-md-3"
-          );
-        }
-        $("#penginapan-container").html(html);
-        return;
-      },
-    });
+    // Ambil data jika form belum disubmit
+    let allAccommodations = await this.getData();
+    await this.handlePagination(allAccommodations);
   }
 }
