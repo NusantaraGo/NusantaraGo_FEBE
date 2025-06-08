@@ -10,6 +10,29 @@ import axios from "axios";
 async function removeEmpty(obj) {
   return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ""));
 }
+
+async function validateData(data_json, header_json, timeout, params) {
+  if (typeof data_json !== "object" || Array.isArray(data_json)) {
+    throw new TypeError("data_json harus berupa objek JSON.");
+  }
+
+  if (typeof header_json !== "object" || Array.isArray(header_json)) {
+    throw new TypeError("header_json harus berupa objek header.");
+  }
+
+  if (typeof timeout !== "number") {
+    throw new TypeError("timeout harus berupa angka (milidetik).");
+  }
+
+  if (timeout < 0) {
+    throw new RangeError("timeout tidak boleh negatif.");
+  }
+
+  if (!params.includes("/")) {
+    throw new Error("params tidak mengandung /");
+  }
+}
+
 export async function getDataML(
   timeout = 5000, // 3000 milidetik = 3 detik
   params = "/",
@@ -34,102 +57,6 @@ export async function getDataML(
       return response.data;
     } else {
       throw new Error("Gagal mengambil data dari API.");
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
-// export async function validateImage(url) {
-//   try {
-//     const response = await axios.head(url, {
-//       headers: {
-//         "User-Agent":
-//           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-//         Accept:
-//           "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-//       },
-//       timeout: 3000, // hindari lama request
-//     });
-//     const contentType = response.headers["content-type"];
-//     return (
-//       response.status === 200 && contentType && contentType.startsWith("image/")
-//     );
-//   } catch (err) {
-//     throw err;
-//   }
-// }
-
-async function validateData(data_json, header_json, timeout, params) {
-  if (typeof data_json !== "object" || Array.isArray(data_json)) {
-    throw new TypeError("data_json harus berupa objek JSON.");
-  }
-
-  if (typeof header_json !== "object" || Array.isArray(header_json)) {
-    throw new TypeError("header_json harus berupa objek header.");
-  }
-
-  if (typeof timeout !== "number") {
-    throw new TypeError("timeout harus berupa angka (milidetik).");
-  }
-
-  if (timeout < 0) {
-    throw new RangeError("timeout tidak boleh negatif.");
-  }
-
-  if (!params.includes("/")) {
-    throw new Error("params tidak mengandung /");
-  }
-}
-
-export async function postData(
-  data_json,
-  header_json = {
-    "Content-Type": "application/json",
-  },
-  timeout = 10000, // 10 detik
-  params = "/"
-) {
-  try {
-    await validateData(data_json, header_json, timeout, params);
-    const response = await axios.post(
-      `${CONFIG["AUTH_URL_API"]}${params}`,
-      JSON.stringify(data_json),
-      {
-        headers: header_json,
-        timeout: timeout,
-        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
-      }
-    );
-    if (response.status <= 400) {
-      return response.data;
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function patchData(
-  data_json,
-  header_json = {
-    "Content-Type": "application/json",
-  },
-  timeout = 10000, // 10 detik
-  params = "/"
-) {
-  try {
-    await validateData(data_json, header_json, timeout, params);
-    const response = await axios.patch(
-      `${CONFIG["AUTH_URL_API"]}${params}`,
-      JSON.stringify(data_json),
-      {
-        headers: header_json,
-        timeout: timeout,
-        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
-      }
-    );
-    if (response.status <= 400) {
-      return response.data;
     }
   } catch (error) {
     throw error;
@@ -180,4 +107,124 @@ export async function getPlaceDetailById(id) {
       }
     }, 300); // Simulate network delay
   });
+}
+
+// export async function validateImage(url) {
+//   try {
+//     const response = await axios.head(url, {
+//       headers: {
+//         "User-Agent":
+//           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+//         Accept:
+//           "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+//       },
+//       timeout: 3000, // hindari lama request
+//     });
+//     const contentType = response.headers["content-type"];
+//     return (
+//       response.status === 200 && contentType && contentType.startsWith("image/")
+//     );
+//   } catch (err) {
+//     throw err;
+//   }
+// }
+
+// auth api
+/**
+ * Sends data to the API using the POST method.
+ * @param {object} data_json - The JSON data to be sent.
+ * @param {object} [header_json={"Content-Type": "application/json"}] - The headers for the request.
+ * @param {number} [timeout=10000] - The timeout for the request in milliseconds.
+ * @param {string} [params="/"] - The URL parameters to be used.
+ * @returns {Promise<object>} - The response data from the API.
+ * @throws Will throw an error if the request fails.
+ */
+
+export async function postData(
+  data_json,
+  header_json = {
+    "Content-Type": "application/json",
+  },
+  timeout = 10000, // 10 detik
+  params = "/"
+) {
+  try {
+    await validateData(data_json, header_json, timeout, params);
+    const response = await axios.post(
+      `${CONFIG["AUTH_URL_API"]}${params}`,
+      JSON.stringify(data_json),
+      {
+        headers: header_json,
+        timeout: timeout,
+        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
+      }
+    );
+    if (response.status <= 400) {
+      return response.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+/**
+ * Mengirimkan data ke API menggunakan metode PATCH.
+ * @param {object} data_json - Data yang dikirimkan dalam format JSON.
+ * @param {object} [header_json] - Header yang dikirimkan. Defaultnya adalah
+ *   `{"Content-Type": "application/json"}`.
+ * @param {number} [timeout] - Waktu tunggu dalam milidetik. Defaultnya adalah
+ *   10 detik.
+ * @param {string} [params] - Parameter URL yang dikirimkan. Defaultnya adalah
+ *   "/".
+ * @returns {Promise<object>} - Respon dari API.
+ */
+
+export async function patchData(
+  data_json,
+  header_json = {
+    "Content-Type": "application/json",
+  },
+  timeout = 10000, // 10 detik
+  params = "/"
+) {
+  try {
+    await validateData(data_json, header_json, timeout, params);
+    const response = await axios.patch(
+      `${CONFIG["AUTH_URL_API"]}${params}`,
+      JSON.stringify(data_json),
+      {
+        headers: header_json,
+        timeout: timeout,
+        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
+      }
+    );
+    if (response.status <= 400) {
+      return response.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+// end
+
+// my profile
+export async function getDataUser(
+  header_json = {
+    "Content-Type": "application/json",
+  },
+  timeout = 10000, // 10 detik
+  params = "/"
+) {
+  try {
+    const response = await axios.get(`${CONFIG["AUTH_URL_API"]}${params}`, {
+      headers: header_json,
+      timeout: timeout,
+    });
+    if (response.status <= 400) {
+      return response.data;
+    } else {
+      throw new Error("Gagal mengambil data dari API.");
+    }
+  } catch (error) {
+    throw error;
+  }
 }

@@ -1,14 +1,13 @@
 import { errorHandling } from "../../utils";
+const { togglePassword } = require("../../utils/my-profile");
 
-export default class my_profile_page {
+export default class myProfilePage {
   #presenterPage = null;
   async render() {
     return `
     <!--My Profile-->
-      <section id='myProfile' class="container text-center text-lg-start" style='padding-top: 8rem;
-    width: 100vw;
-    height: 50vw;'>
-         <div class="card card-custom text-center">
+    <section id='myProfile' class="container text-center text-lg-start" style='padding-top: 8rem;'>
+      <div class="card card-custom text-center">
         <div class="profile-header"></div>
         <div class="profile-img">
             <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
@@ -59,7 +58,7 @@ export default class my_profile_page {
                         </span>
                         <input type="password" class="form-control" id="password" name="password"
                             placeholder="Enter your password" required>
-                        <span class="input-group-text password-toggle" onclick="togglePassword('password')">
+                        <span class="input-group-text password-toggle" data-field-id="password">
                             <i class="fas fa-eye" id="password-eye"></i>
                         </span>
                     </div>
@@ -76,7 +75,7 @@ export default class my_profile_page {
                         </span>
                         <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                             placeholder="Confirm your password" required>
-                        <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword')">
+                        <span class="input-group-text password-toggle" data-field-id="confirmPassword">
                             <i class="fas fa-eye" id="confirmPassword-eye"></i>
                         </span>
                     </div>
@@ -96,84 +95,107 @@ export default class my_profile_page {
                 </div>
             </form>
         </div>
-    </div>
+      </div>
     </section>
     `;
   }
 
-  async togglePassword(fieldId) {
-    const passwordField = document.getElementById(fieldId);
-    const eyeIcon = document.getElementById(fieldId + "-eye");
-
-    if (passwordField.type === "password") {
-      passwordField.type = "text";
-      eyeIcon.classList.remove("fa-eye");
-      eyeIcon.classList.add("fa-eye-slash");
-    } else {
-      passwordField.type = "password";
-      eyeIcon.classList.remove("fa-eye-slash");
-      eyeIcon.classList.add("fa-eye");
-    }
+  async getUser() {
+    this.#presenterPage = new MyProfilePresenter({ myProfilePage: this });
+    return await this.#presenterPage.getUser();
   }
 
   async afterRender() {
-    // Form validation and submission
-    document.getElementById("profileForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+    // ambil user tokenize
+    const users = await this.getUser();
 
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-      const username = document.getElementById("username").value;
-
-      // Reset previous validation states
-      document.getElementById("confirmPassword").classList.remove("is-invalid");
-
-      // Check if passwords match
-      if (password !== confirmPassword) {
-        document.getElementById("confirmPassword").classList.add("is-invalid");
-        return;
-      }
-
-      // If validation passes
-      alert(`Profile updated successfully!\nUsername: ${username}`);
-
-      // Here you would typically send the data to a server
-      console.log("Form submitted:", {
-        username: username,
-        password: password,
+    // password toogle
+    document.querySelectorAll(".password-toggle").forEach((toggleBtn) => {
+      toggleBtn.addEventListener("click", () => {
+        const fieldId = toggleBtn.getAttribute("data-field-id");
+        togglePassword(fieldId);
       });
     });
 
+    // Form validation and submission
+    document
+      .getElementById("profileForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const username = document.getElementById("username").value;
+
+        // Reset previous validation states
+        document
+          .getElementById("confirmPassword")
+          .classList.remove("is-invalid");
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+          document
+            .getElementById("confirmPassword")
+            .classList.add("is-invalid");
+          return;
+        }
+
+        // If validation passes
+        alert(`Profile updated successfully!\nUsername: ${username}`);
+
+        // Here you would typically send the data to a server
+        console.log("Form submitted:", {
+          username: username,
+          password: password,
+        });
+      });
+
     // Real-time password matching validation
-    document.getElementById("confirmPassword").addEventListener("input", function () {
-      const password = document.getElementById("password").value;
-      const confirmPassword = this.value;
+    document
+      .getElementById("confirmPassword")
+      .addEventListener("input", function () {
+        const password = document.getElementById("password").value;
+        const confirmPassword = this.value;
 
-      if (confirmPassword && password !== confirmPassword) {
-        this.classList.add("is-invalid");
-      } else {
-        this.classList.remove("is-invalid");
-      }
-    });
+        if (confirmPassword && password !== confirmPassword) {
+          this.classList.add("is-invalid");
+        } else {
+          this.classList.remove("is-invalid");
+        }
+      });
 
-    // Reset form handler
-    document.getElementById("profileForm").addEventListener("reset", function () {
-      document.getElementById("confirmPassword").classList.remove("is-invalid");
-      setTimeout(() => {
-        // Reset password visibility
-        document.getElementById("password").type = "password";
-        document.getElementById("confirmPassword").type = "password";
-        document.getElementById("password-eye").classList.remove("fa-eye-slash");
-        document.getElementById("password-eye").classList.add("fa-eye");
-        document.getElementById("confirmPassword-eye").classList.remove("fa-eye-slash");
-        document.getElementById("confirmPassword-eye").classList.add("fa-eye");
-      }, 10);
-    });
+    // Reset form handler and reset password
+    document
+      .getElementById("profileForm")
+      .addEventListener("reset", function () {
+        document
+          .getElementById("confirmPassword")
+          .classList.remove("is-invalid");
+        setTimeout(() => {
+          // Reset password visibility
+          document.getElementById("password").type = "password";
+          document.getElementById("confirmPassword").type = "password";
+          document
+            .getElementById("password-eye")
+            .classList.remove("fa-eye-slash");
+          document.getElementById("password-eye").classList.add("fa-eye");
+          document
+            .getElementById("confirmPassword-eye")
+            .classList.remove("fa-eye-slash");
+          document
+            .getElementById("confirmPassword-eye")
+            .classList.add("fa-eye");
+        }, 10);
+      });
   }
 
   async errorHandlerFetch(error) {
     if (error.code === "ECONNABORTED") {
-      errorHandling("Timeout Error!", "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi.");
+      errorHandling(
+        "Timeout Error!",
+        "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
+      );
     } else {
       if (error.status && error.status === 400) {
         errorHandling("Bad Request!", error.message);
