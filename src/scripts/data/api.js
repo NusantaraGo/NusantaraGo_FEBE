@@ -1,13 +1,33 @@
 import CONFIG from "../config";
 import axios from "axios";
+
+/**
+ * Mengembalikan objek yang dihapus propertinya jika nilai dari properti tersebut
+ * adalah string kosong.
+ * @param {object} obj - Objek yang akan dihapus propertinya.
+ * @returns {Promise<object>} Objek yang sudah dihapus propertinya.
+ */
+async function removeEmpty(obj) {
+  return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ""));
+}
 export async function getDataML(
-  timeout = 3000, // 3000 milidetik = 3 detik
+  timeout = 5000, // 3000 milidetik = 3 detik
   params = "/",
   filteredData = null
 ) {
   try {
+    /* The code snippet `let filteredParams = {};` initializes an empty object called `filteredParams`. */
+    let filteredParams = {};
+    if (filteredData) {
+      filteredParams = await removeEmpty(filteredData);
+    }
+
+    /* The code snippet you provided is making an HTTP GET request using Axios to a specific URL
+    constructed from `CONFIG["ML_URL_API"]` and `params`. It includes additional configurations such
+    as passing `filteredParams` as query parameters, setting a timeout for the request, and handling
+    the response. */
     const response = await axios.get(`${CONFIG["ML_URL_API"]}${params}`, {
-      params: filteredData,
+      params: filteredParams,
       timeout: timeout,
     });
     if (response.status <= 400) {
