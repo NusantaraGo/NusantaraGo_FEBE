@@ -195,7 +195,12 @@
 
 .profile-header {
   height: 8rem;
-  background: linear-gradient(to right, #a855f7, #ec4899);
+  background: linear-gradient(
+    to right,
+    var(--main-color),
+    var(--second-color),
+    var(--third-color)
+  );
   position: relative;
 }
 
@@ -228,12 +233,12 @@
 }
 
 .form-control:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 0.2rem rgba(168, 85, 247, 0.25);
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 0.2rem var(--hover-button-color);
 }
 
 .btn-primary-custom {
-  background: linear-gradient(to right, #a855f7, #ec4899);
+  background: var(--main-color);
   border: none;
   border-radius: 0.5rem;
   padding: 0.75rem 1.5rem;
@@ -263,8 +268,7 @@
 .input-group-text {
   background-color: #f9fafb;
   border: 2px solid #e5e7eb;
-  border-right: none;
-  border-radius: 0.5rem 0 0 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .input-group .form-control {
@@ -273,7 +277,7 @@
 }
 
 .input-group:focus-within .input-group-text {
-  border-color: #a855f7;
+  border-color: var(--main-color);
 }
 
 .password-toggle {

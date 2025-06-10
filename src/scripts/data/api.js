@@ -178,6 +178,33 @@ export async function postData(
  * @returns {Promise<object>} - Respon dari API.
  */
 
+export async function putData(
+  data_json,
+  header_json = {
+    "Content-Type": "application/json",
+  },
+  timeout = 10000, // 10 detik
+  params = "/"
+) {
+  try {
+    await validateData(data_json, header_json, timeout, params);
+    const response = await axios.put(
+      `${CONFIG["AUTH_URL_API"]}${params}`,
+      JSON.stringify(data_json),
+      {
+        headers: header_json,
+        timeout: timeout,
+        withCredentials: true, // <--- WAJIB agar cookie diterima dari Hapi
+      }
+    );
+    if (response.status <= 400) {
+      return response.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function patchData(
   data_json,
   header_json = {
@@ -207,7 +234,7 @@ export async function patchData(
 // end
 
 // my profile
-export async function getDataUser(
+export async function getData(
   header_json = {
     "Content-Type": "application/json",
   },
@@ -218,13 +245,18 @@ export async function getDataUser(
     const response = await axios.get(`${CONFIG["AUTH_URL_API"]}${params}`, {
       headers: header_json,
       timeout: timeout,
+      withCredentials: true,
     });
+
+    console.log(response);
+
     if (response.status <= 400) {
       return response.data;
     } else {
       throw new Error("Gagal mengambil data dari API.");
     }
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }

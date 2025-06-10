@@ -2,7 +2,7 @@ import { visibleNavbarAndFooter } from "../../utils/auth";
 import PencarianPresenter from "./pencarian-presenter";
 import { errorHandling, successHandling } from "../../utils";
 
-export default class PencarianPage {
+class PencarianPage {
   #presenterPage = null;
   #html = null;
   /**
@@ -51,6 +51,15 @@ export default class PencarianPage {
         </div>
       </section>
     `;
+  }
+
+  /**
+   * Mendapatkan data user dari API.
+   * @return {Promise<object>} - Data user yang diambil dari API.
+   */
+  async getUser() {
+    this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
+    return await this.#presenterPage.getUser();
   }
 
   /**
@@ -389,7 +398,18 @@ export default class PencarianPage {
     }
   }
 
+  /**
+   * Handles the after render event of the page. This function sets up the page
+   * after the HTML has been rendered. It imports jQuery and paginationjs, sets
+   * up the navigation bar, and configures the select options for provinces and
+   * categories. It also sets up the event listener for the form submission and
+   * fetches the data if the form has not been submitted yet.
+   * @returns {Promise<void>}
+   */
   async afterRender() {
+    // inisialisasi
+    let response;
+
     // tampilkan navbar
     visibleNavbarAndFooter();
 
@@ -398,22 +418,44 @@ export default class PencarianPage {
     window.jQuery = $;
     await require("paginationjs");
 
+    // ambil user tokenize
+
+    response = await this.getUser();
+
+    // jadikan data user saja
+    try {
+      const users = response?.data;
+      if (!users) {
+        return;
+      }
+    } catch (error) {
+      return await this.errorHandlerFetch(error.message);
+    }
+
     // konfigurasi provinsi
-    // ambil data provinsi
-    const provinces = await this.getGroupBy("provinces");
-    // konfigurasi untuk option
-    this.#html = await this.renderOptionBy(provinces);
-    // tambahkan option
-    $("#provinces").append(this.#html);
+    try {
+      // ambil data provinsi
+      const provinces = await this.getGroupBy("provinces");
+      // konfigurasi untuk option
+      this.#html = await this.renderOptionBy(provinces);
+      // tambahkan option
+      $("#provinces").append(this.#html);
+    } catch (err) {
+      return;
+    }
     // emd
 
     // konfigurasi kategori
-    // ambil data kategori
-    const categories = await this.getGroupBy("categories");
-    // konfigurasi untuk option
-    this.#html = await this.renderOptionBy(categories);
-    // tambahkan option
-    $("#categories").append(this.#html);
+    try {
+      // ambil data kategori
+      const categories = await this.getGroupBy("categories");
+      // konfigurasi untuk option
+      this.#html = await this.renderOptionBy(categories);
+      // tambahkan option
+      $("#categories").append(this.#html);
+    } catch (error) {
+      return;
+    }
     // end
 
     // konfigurasi rating
@@ -440,7 +482,13 @@ export default class PencarianPage {
     });
 
     // Ambil data jika form belum disubmit
-    let allAccommodations = await this.getData();
-    await this.handlePagination(allAccommodations);
+    try {
+      let allAccommodations = await this.getData();
+      await this.handlePagination(allAccommodations);
+    } catch (error) {
+      return;
+    }
   }
 }
+
+export default PencarianPage;
