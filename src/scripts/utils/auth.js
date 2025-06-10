@@ -13,6 +13,12 @@ export function hideNavbarAndFooter() {
   const navbar = document.querySelector("nav.navbar");
   navbar.classList.add("d-none");
 }
+/**
+ * Show the navbar and footer
+ *
+ * This function will show the navbar and footer so that it will
+ * appear on all pages except the login and register pages.
+ */
 export function visibleNavbarAndFooter() {
   // footer
   const footer = document.querySelector("footer.bd-footer");

@@ -1,6 +1,13 @@
 // swallfire
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
+/**
+ * Format a date string to a human-readable format according to the given locale.
+ * @param {string} date - The date string to format
+ * @param {string} [locale="en-US"] - The locale to use for formatting the date
+ * @param {Object} [options={}] - Additional options to pass to toLocaleDateString. See the MDN documentation for more information: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
+ * @returns {string} The formatted date string
+ */
 export function showFormattedDate(date, locale = "en-US", options = {}) {
   return new Date(date).toLocaleDateString(locale, {
     year: "numeric",

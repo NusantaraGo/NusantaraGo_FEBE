@@ -2,6 +2,12 @@ import { postData } from "../../data/api";
 
 class RegisterPresenter {
   #registerPage;
+  /**
+   * Constructor for RegisterPresenter class.
+   * @param {object} options - Options for constructing RegisterPresenter.
+   * @param {RegisterPage} options.registerPage - The RegisterPage object to
+   *   associate with this presenter.
+   */
   constructor({ registerPage }) {
     this.#registerPage = registerPage;
   }
