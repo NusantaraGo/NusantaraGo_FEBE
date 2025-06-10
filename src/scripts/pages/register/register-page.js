@@ -4,6 +4,10 @@ import RegisterPresenter from "./register-presenter";
 import { successHandling } from "../../utils";
 export default class RegisterPage {
   #presenterPage = null;
+  /**
+   * Render the register page
+   * @returns {string} the register page
+   */
   async render() {
     return `
       <section class="container text-center text-lg-start" style="padding-top: 8rem;">
@@ -75,6 +79,14 @@ export default class RegisterPage {
     return email.endsWith("@gmail.com");
   }
 
+  /**
+   * Method yang dijalankan setelah elemen-elemen di halaman register selesai
+   * di-render. Method ini akan menginisialisasi event listener untuk form
+   * submission dan reset. Juga, method ini akan menginisialisasi event
+   * listener untuk submit button dan membuat event listener untuk validasi
+   * input realtime.
+   * @return {Promise<void>}
+   */
   async afterRender() {
     // hapus navbar dan footer
     hideNavbarAndFooter();
@@ -147,6 +159,14 @@ export default class RegisterPage {
     registerButton.addEventListener("click", handleSubmit);
   }
 
+  /**
+   * Handles errors that occur during data fetching operations.
+   * If the error is a timeout error, it will display a "Timeout Error!"
+   * message. If the error has a response, it will extract the error details
+   * from the response and display an error message accordingly.
+   * @param {Error} error - The error object that was thrown.
+   * @returns {Promise<void>}
+   */
   async errorHandlerFetch(error) {
     console.error(error);
     if (error.code === "ECONNABORTED") {
@@ -172,6 +192,20 @@ export default class RegisterPage {
       }
     }
   }
+
+  /**
+   * Handles successful responses from data fetching operations.
+   * This function displays success messages to the user using a custom
+   * success handling function if the response status code is between
+   * 200 and 400 and there is no error.
+   *
+   * @param {object} params - The object containing response details.
+   * @param {number} params.statusCode - The HTTP status code of the response.
+   * @param {string} params.message_title - The title of the success message.
+   * @param {string} params.detail_message - The detail message to be displayed.
+   * @param {object} [params.error] - The error object provided by Axios when a request fails.
+   * @returns {Promise<void>}
+   */
 
   async successHandlerFetch({
     statusCode,

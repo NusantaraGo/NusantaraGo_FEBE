@@ -5,6 +5,11 @@ import MyProfilePresenter from "./my-profile-presenter";
 
 export default class myProfilePage {
   #presenterPage = null;
+  /**
+   * Render the My Profile page.
+   *
+   * @returns {string} The rendered HTML of the My Profile page.
+   */
   async render() {
     return `
     <!--My Profile-->
@@ -169,6 +174,11 @@ export default class myProfilePage {
     return await this.#presenterPage.getUser();
   }
 
+  /**
+   * Menghandle proses logout dengan mengosongkan data akun yang ada di
+   * LocalStorage dan mengarahkan ke halaman awal.
+   * @return {Promise<void>}
+   */
   async handleLogout() {
     this.#presenterPage = new MyProfilePresenter({ myProfilePage: this });
     return await this.#presenterPage.getLogout();

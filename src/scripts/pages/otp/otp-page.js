@@ -3,6 +3,10 @@ import { hideNavbarAndFooter } from "../../utils/auth";
 import OtpPresenter from "./otp-presenter";
 export default class OtpPage {
   #presenterPage = null;
+  /**
+   * Render the OTP page
+   * @returns {string} the OTP page
+   */
   async render() {
     return `
       <section class="container text-center text-lg-start" style="padding-top: 8rem;">
@@ -62,6 +66,15 @@ export default class OtpPage {
     return email.endsWith("@gmail.com");
   }
 
+  /**
+   * Starts a countdown timer for the OTP page.
+   * @param {number} durationInSeconds - The duration of the countdown in seconds.
+   * @param {HTMLElement} display - The element that displays the countdown.
+   * @param {function} [onComplete] - The callback function to call when the countdown is complete.
+   * @description
+   * Sets up a countdown timer that displays the time remaining in the format "mm:ss".
+   * The timer starts immediately and calls the onComplete function when it is complete.
+   */
   startOtpCountdown(durationInSeconds, display, onComplete) {
     let timer = durationInSeconds;
 
@@ -94,6 +107,12 @@ export default class OtpPage {
     countdownInterval = setInterval(updateDisplay, 1000);
   }
 
+  /**
+   * Mengecek parameter di URL apakah ada atau tidak. Jika tidak ada maka akan
+   * menampilkan error dan mengembalikan nilai false. Jika ada maka akan
+   * mengembalikan nilai true berserta dengan parameter yang diambil.
+   * @returns {object} - Contoh response: { searchParams: string, isValid: boolean }
+   */
   checkSearchParams() {
     // ambil uuid pathname dari url
 
@@ -118,6 +137,13 @@ export default class OtpPage {
     }
   }
 
+  /**
+   * Sends the OTP data to the backend for verification and session management.
+   * @param {object} data - The data object containing the OTP and other necessary information.
+   * @description
+   * - Instantiates the OTP presenter and passes the OTP page instance as an argument.
+   * - Calls the sendDataToAPI method of the OTP presenter to send the data to the backend.
+   */
   sendToBackend(data) {
     // kirimkan ke bagian presenter
     this.#presenterPage = new OtpPresenter({
@@ -126,6 +152,21 @@ export default class OtpPage {
     // kirim kan keapi melalui presenter
     this.#presenterPage.sendDataToAPI(data);
   }
+
+  /**
+   * Method executed after the OTP page elements are rendered.
+   * Initializes event listeners for the OTP form submission and starts the
+   * countdown timer. Validates input and handles form submission to verify OTP.
+   * Also checks for expired OTP and handles session storage accordingly.
+   *
+   * @return {Promise<void>}
+   * @description
+   * - Hides the navbar and footer for the page.
+   * - Captures the form and necessary elements for OTP processing.
+   * - Adds an event listener for the OTP form submission, validating the input and sending data to the backend if valid.
+   * - Checks session storage for OTP expiration time and starts a countdown timer, displaying messages when the OTP expires.
+   * - Handles backend communication for OTP verification and session management.
+   */
 
   async afterRender() {
     // hapus navbar dan footer
@@ -228,6 +269,14 @@ export default class OtpPage {
     });
   }
 
+  /**
+   * Handles errors that occur during data fetching operations.
+   * If the error is a timeout error, it will display a "Timeout Error!"
+   * message. If the error has a response, it will extract the error details
+   * from the response and display an error message accordingly.
+   * @param {Error} error - The error object that was thrown.
+   * @returns {Promise<void>}
+   */
   async errorHandlerFetch(error) {
     if (error.code === "ECONNABORTED") {
       errorHandling(
@@ -253,6 +302,18 @@ export default class OtpPage {
     }
   }
 
+  /**
+   * Handles successful responses from data fetching operations. This function
+   * displays success messages to the user using a custom success handling
+   * function if the response status code is between 200 and 400 and there is
+   * no error.
+   * @param {object} params - The object containing response details.
+   * @param {number} params.statusCode - The HTTP status code of the response.
+   * @param {string} params.message_title - The title of the success message.
+   * @param {string} params.detail_message - The detail message to be displayed.
+   * @param {object} [params.error] - The error object provided by Axios when a request fails.
+   * @returns {Promise<void>}
+   */
   async successHandlerFetch({
     statusCode,
     message_title,
