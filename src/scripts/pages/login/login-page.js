@@ -15,7 +15,9 @@ export default class LoginPage {
                 <div class="col-lg-6">
                     <div class="card-body px-md-5">
                         <div class="text-center mb-3">
-                            <img src="images/logo.png" style="width: 185px;" alt="logo">
+                          <a href="#/">
+                            <img class="img-fluid"  src="images/logo.png" style="width: 185px;" alt="logo">
+                          </a>
                         </div>
                         <form id="loginForm">
                             <h3 class="poppins-bold" style="color: #b57547;">Login Akun</h3>

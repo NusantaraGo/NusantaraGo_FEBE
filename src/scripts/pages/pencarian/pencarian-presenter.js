@@ -1,9 +1,19 @@
-import { getDataML, validateImage } from "../../data/api";
+import { getDataML, validateImage, getData } from "../../data/api";
 
 class PencarianPresenter {
   #pencarianPage;
   constructor({ pencarianPage }) {
     this.#pencarianPage = pencarianPage;
+  }
+
+  async getUser() {
+    try {
+      const response = await getData(undefined, undefined, "/auth/get-user");
+      return response;
+    } catch (error) {
+      await this.#pencarianPage.errorHandlerFetch(error);
+      window.location.replace("#/login");
+    }
   }
 
   /**

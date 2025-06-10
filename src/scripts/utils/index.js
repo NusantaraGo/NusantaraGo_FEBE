@@ -39,6 +39,7 @@ function handlingMessage(icon = "success", title = "OOPS!", message) {
  * @param {string} message - Isi pesan error yang ditampilkan.
  */
 export const errorHandling = (title, message) => {
+  console.log(title, message);
   handlingMessage("error", title, message);
 };
 
