@@ -69,23 +69,30 @@ class PencarianPage {
    * @returns {String} - HTML template for the accommodations
    */
   async template(allAccommodations, data) {
+    if (!allAccommodations || allAccommodations.length === 0) return false;
     return await this.calculateCurrentPages(allAccommodations, data);
   }
 
-  // async validateImage(img) {
-  //   console.log("jalan");
-  //   let validImage = "https://imageplaceholder.net/408x272?text=No+Image";
-  //   if (Array.isArray(img)) {
-  //     for (const url of img) {
-  //       const isValid = await this.#presenterPage.validateImagePresenter(url);
-  //       if (isValid) {
-  //         validImage = url;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   return validImage;
-  // }
+  checkImageLoad(url) {
+    return new Promise((resolve, reject) => {
+      const testImg = new Image();
+      testImg.onload = () => resolve();
+      testImg.onerror = () => reject();
+      testImg.src = url;
+    });
+  }
+
+  async validateImage(name, img) {
+    let placeholder = `https://imageplaceholder.net/408x272?text=${name}`;
+    if (!img) return placeholder;
+
+    try {
+      await this.checkImageLoad(img);
+      return img; // Gambar berhasil dimuat
+    } catch (error) {
+      return placeholder; // Gagal dimuat, pakai placeholder
+    }
+  }
 
   /**
    * Renders HTML templates for a list of accommodations.
@@ -123,21 +130,23 @@ class PencarianPage {
 
     // Generate HTML for current page items
     let html = "";
-    datas.forEach(async (item) => {
-      // let validImage = await this.validateImage(item.foto);
+    for (const item of datas) {
+      const validImage = await this.validateImage(item.nama, item.foto);
 
       html += `
         <div id="tour-${item.id}" class="col">
           <div class="card shadow">
-            <div class="image">
-              <img src="https://imageplaceholder.net/600x400/eeeeee/131313?text=Your+Image" class="card-img-top" alt="gambar">
+            <div class="image" style="height:20em">
+              <img class="card-img-top object-fit-cover h-100" style="object-position:center;" src='${validImage}' class="card-img-top" alt="${
+        item.nama
+      }.jpg">
             </div>
             <div class="card-body">
               <h5 class="card-title text-justify text-truncate">${
                 item.nama
               }</h5>
               <p class="location-text">
-                  <span class="location-icon me-1">📍</span>${item.provinsi}
+                <span class="location-icon me-1">📍</span>${item.provinsi}
               </p>
               <p class="card-description" style='height:150px'>${
                 item.deskripsi
@@ -156,7 +165,7 @@ class PencarianPage {
                   <a id='button-cart' data-id='${
                     item.id
                   }' class="btn btn-custom">
-                      <i class="fas fa-calendar-check me-2"></i>Detail
+                    <i class="fas fa-calendar-check me-2"></i>Detail
                   </a>
                 </div>
               </div>
@@ -164,7 +173,7 @@ class PencarianPage {
           </div>
         </div>
       `;
-    });
+    }
 
     return html;
   }
@@ -199,29 +208,6 @@ class PencarianPage {
   }
 
   /**
-   * Gets all accommodation data from API. If groupBy is provided, it will group
-   * the data by the given field.
-   * @param {string|null} groupBy - The field to group the data by. If not provided,
-   *     it will return all data ungrouped.
-   * @returns {Promise<Array|false>} - A promise that resolves to an array of
-   *     accommodation data objects if successful, or false if no data is found.
-   */
-  async getData(groupBy = null) {
-    // Sample data for all accommodations
-    this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
-    const allAccommodations = await this.#presenterPage.getAllAccomodations(
-      groupBy
-    );
-
-    console.log(allAccommodations);
-    if (allAccommodations.length === 0 || !allAccommodations) {
-      return false;
-    }
-
-    return allAccommodations;
-  }
-
-  /**
    * Gets all distinct values for the given field from the database.
    * @param {string} data - The field to get distinct values for
    * @returns {Promise<Array<string>|false>} - A promise that resolves to an array
@@ -249,14 +235,34 @@ class PencarianPage {
   }
 
   /**
+   * Gets all accommodation data from API. If groupBy is provided, it will group
+   * the data by the given field.
+   * @param {string|null} groupBy - The field to group the data by. If not provided,
+   *     it will return all data ungrouped.
+   * @returns {Promise<Array|false>} - A promise that resolves to an array of
+   *     accommodation data objects if successful, or false if no data is found.
+   */
+  async getData(groupBy = null) {
+    // Sample data for all accommodations
+    this.#presenterPage = new PencarianPresenter({ pencarianPage: this });
+    const allAccommodations = await this.#presenterPage.getAllAccomodations(
+      groupBy
+    );
+
+    if (allAccommodations.length === 0 || !allAccommodations) {
+      return false;
+    }
+
+    return allAccommodations;
+  }
+
+  /**
    * Creates a pagination on the given element, using the given array of
    * accommodation data. If the data is empty, it will not create the
    * pagination.
    * @param {Array} allAccommodations - Array of all accommodations data
    */
   async handlePagination(allAccommodations) {
-    if (!allAccommodations || allAccommodations.length === 0) return;
-
     // buat pagination
     $("#pagination-container").pagination({
       dataSource: Array.from(
@@ -270,6 +276,7 @@ class PencarianPage {
       autoHideNext: true,
       callback: async (data, pagination) => {
         let html = await this.template(allAccommodations, data);
+        const penginapanContainer = $("#penginapan-container");
         if (!html) {
           html = `
           <div class="col-12">
@@ -281,12 +288,33 @@ class PencarianPage {
             </div>
           </div>
         `;
+
+          // jika container penginapan memiliki kelas
+          // row-cols-1 row-cols-sm-2 row-cols-md-3, maka
+          // hapus kelas tersebut. hal ini dilakukan agar
+          // ketika data tidak ditemukan, maka container
+          // penginapan tidak memiliki kelas yang membuat
+          // tampilan menjadi tidak sesuai.
+          if (
+            penginapanContainer.hasClass(
+              "row-cols-1 row-cols-sm-2 row-cols-md-3"
+            )
+          ) {
+            penginapanContainer.removeClass(
+              "row-cols-1 row-cols-sm-2 row-cols-md-3"
+            );
+          }
         } else {
-          $("#penginapan-container").addClass(
+          // jika data ditemukan, maka tambahkan kelas row-cols-1
+          // row-cols-sm-2 row-cols-md-3 pada container penginapan,
+          // agar tampilan menjadi sesuai.
+          penginapanContainer.addClass(
             "row-cols-1 row-cols-sm-2 row-cols-md-3"
           );
         }
-        $("#penginapan-container").html(html);
+
+        // tambahkan htmlnya ke container
+        penginapanContainer.html(html);
       },
     });
     // end

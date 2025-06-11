@@ -297,13 +297,15 @@ async function validateData(data_json, header_json, timeout, params) {
 }
 
 export async function getDataML(
-  timeout = 5000, // 3000 milidetik = 3 detik
+  timeout = 10000, // 10000 milidetik = 10 detik
   params = "/",
   filteredData = null
 ) {
   try {
     /* The code snippet `let filteredParams = {};` initializes an empty object called `filteredParams`. */
     let filteredParams = {};
+    const base_url = CONFIG["ML_URL_API"];
+
     if (filteredData) {
       filteredParams = await removeEmpty(filteredData);
     }
@@ -312,11 +314,25 @@ export async function getDataML(
     constructed from `CONFIG["ML_URL_API"]` and `params`. It includes additional configurations such
     as passing `filteredParams` as query parameters, setting a timeout for the request, and handling
     the response. */
-    const response = await axios.get(`${CONFIG["ML_URL_API"]}${params}`, {
+    const response = await axios.get(`${base_url}${params}`, {
       params: filteredParams,
       timeout: timeout,
+      contentType: "application/json",
     });
     if (response.status <= 400) {
+      if (!response.data) {
+        throw new Error("Data yang didapatkan kosong");
+      }
+
+      // buat key foto menjadi url/data-img
+      response.data = response.data.map((item) => {
+        if (item.foto) {
+          return { ...item, foto: base_url + "/" + item.foto };
+        } else {
+          return item;
+        }
+      });
+
       return response.data;
     } else {
       throw new Error("Gagal mengambil data dari API.");
@@ -374,26 +390,6 @@ export async function getPlaceDetailById(id) {
     throw error;
   }
 }
-
-// export async function validateImage(url) {
-//   try {
-//     const response = await axios.head(url, {
-//       headers: {
-//         "User-Agent":
-//           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-//         Accept:
-//           "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-//       },
-//       timeout: 3000, // hindari lama request
-//     });
-//     const contentType = response.headers["content-type"];
-//     return (
-//       response.status === 200 && contentType && contentType.startsWith("image/")
-//     );
-//   } catch (err) {
-//     throw err;
-//   }
-// }
 
 // auth api
 /**

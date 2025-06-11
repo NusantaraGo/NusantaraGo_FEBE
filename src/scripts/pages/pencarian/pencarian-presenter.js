@@ -2,9 +2,21 @@ import { getDataML, validateImage, getData } from "../../data/api";
 
 class PencarianPresenter {
   #pencarianPage;
+
+  /**
+   * Constructor for PencarianPresenter class.
+   * @param {object} options - Object containing the PencarianPage instance.
+   * @param {PencarianPage} options.pencarianPage - The PencarianPage instance.
+   */
   constructor({ pencarianPage }) {
     this.#pencarianPage = pencarianPage;
   }
+  /**
+   * Retrieves user data from the API and returns it if successful.
+   * If the request fails, it will call the error handler and redirect the user to the login page.
+   * @return {Promise<object>} - The user data if the request is successful.
+   * @throws Will call the error handler and redirect the user to the login page if the request fails.
+   */
 
   async getUser() {
     try {
@@ -65,17 +77,6 @@ class PencarianPresenter {
       return false;
     }
   }
-
-  // async validateImagePresenter(url) {
-  //   try {
-  //     const response = await validateImage(url);
-  //     return response;
-  //   } catch (error) {
-  //     if (error) {
-  //       return false;
-  //     }
-  //   }
-  // }
 }
 
 export default PencarianPresenter;
