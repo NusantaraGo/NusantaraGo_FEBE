@@ -414,7 +414,6 @@ export async function postData(
   timeout = 10000, // 10 detik
   params = "/"
 ) {
-  console.log(`${CONFIG["AUTH_URL_API"]}${params}`);
   try {
     await validateData(data_json, header_json, timeout, params);
     const response = await axios.post(
@@ -514,8 +513,6 @@ export async function getData(
       timeout: timeout,
       withCredentials: true,
     });
-
-    console.log(response);
 
     if (response.status <= 400) {
       return response.data;
