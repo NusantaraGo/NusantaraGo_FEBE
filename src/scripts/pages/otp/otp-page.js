@@ -178,7 +178,8 @@ export default class OtpPage {
 
     // submit button
     const handleSubmit = (event) => {
-      if (event.target.id === "verifikasiOtpButton") {
+      console.log(event.submitter?.id);
+      if (event.submitter?.id === "verifikasiOtpButton") {
         // chekc params
         // ambil dan check search params
         let { searchParams, isValid } = this.checkSearchParams();
