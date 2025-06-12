@@ -39,11 +39,33 @@ class PencarianPresenter {
 
   async getAllAccomodations(filteredData) {
     try {
-      const response = await getDataML(
+      let response = await getDataML(
         undefined,
         "/api/attractions",
         filteredData
       );
+
+      if (response) {
+        // Parameter global
+        const mean_of_rating = await this.hitungRataRataRating(response);
+        const jumlah_review = 100;
+
+        for (const data_accomodation of response) {
+          data_accomodation.skor = await this.hitungSkorBayesian(
+            data_accomodation.rating,
+            data_accomodation.jumlah_review,
+            mean_of_rating,
+            jumlah_review
+          );
+        }
+
+        response = response.sort((a, b) => {
+          return b.skor - a.skor;
+        });
+
+        console.log(response);
+      }
+
       return response;
     } catch (error) {
       await this.#pencarianPage.errorHandlerFetch(error);
@@ -76,6 +98,20 @@ class PencarianPresenter {
       await this.#pencarianPage.errorHandlerFetch(error);
       return false;
     }
+  }
+
+  /**
+   * Calculates the average rating of the given accommodations.
+   * @param {Array} data - An array of accommodations.
+   * @returns {number} - The average rating of the accommodations.
+   */
+  async hitungRataRataRating(data) {
+    const totalRating = data.reduce((sum, p) => sum + p.rating, 0);
+    return totalRating / data.length;
+  }
+
+  async hitungSkorBayesian(R, v, C, m) {
+    return (v / (v + m)) * R + (m / (v + m)) * C;
   }
 }
 
