@@ -128,6 +128,23 @@ class PencarianPage {
       return starsHTML;
     }
 
+    function kategori(angka_probabilitas) {
+      let angka_fixed = angka_probabilitas.toFixed(2);
+      let html_span = ``;
+
+      if (angka_fixed > 4) {
+        html_span = `<span class="border border-info rounded">Super Rekomendasi</span>`;
+      } else if (angka_fixed > 3) {
+        html_span = `<span class="border border-primary rounded">Rekomendasi</span>`;
+      } else if (angka_fixed > 2) {
+        html_span = ``;
+      } else if (angka_fixed >= 0) {
+        html_span = `<span class="border border-danger rounded">Tidak Rekomendasi</span>`;
+      }
+
+      return html_span;
+    }
+
     // Generate HTML for current page items
     let html = "";
     for (const item of datas) {
@@ -154,6 +171,7 @@ class PencarianPage {
               <div class="rating-section">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
+                    ${kategori(item.skor)}
                     <span class="stars">${createStars(item.rating)}</span>
                     <span class="rating-text">${item.rating}</span>
                   </div>
@@ -162,10 +180,8 @@ class PencarianPage {
               </div>
               <div class="mt-auto">
                 <div class="d-flex justify-content-between align-items-center">
-                  <a id='button-cart' data-id='${
-                    item.id
-                  }' class="btn btn-custom">
-                    <i class="fas fa-calendar-check me-2"></i>Detail
+                  <a href="#/detail/${item.id}" class="btn btn-custom">
+                    <i class="fas fa-info-circle me-2"></i>Lihat Detail
                   </a>
                 </div>
               </div>
