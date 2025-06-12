@@ -1,9 +1,17 @@
 import { visibleNavbarAndFooter } from "../../utils/auth";
 import HomePresenter from "./home-presenter";
+import ChatbotComponent from "../../components/chatbot-component";
 
 export default class HomePage {
   #presenterPage = null;
+  #chatbotComponent = null;
+
+  constructor() {
+    this.#chatbotComponent = new ChatbotComponent();
+  }
+
   async render() {
+    const chatbotHtml = await this.#chatbotComponent.render();
     return `
      <section class="container pb-5" style='padding-top:8rem;'>
         <div class="row align-items-center">
@@ -61,6 +69,7 @@ export default class HomePage {
           </div>
         </div>
       </section>
+      ${chatbotHtml}
     `;
   }
 
@@ -71,5 +80,8 @@ export default class HomePage {
     this.#presenterPage = new HomePresenter({ homePage: this });
 
     await this.#presenterPage.afterRender();
+
+    // Render and initialize chatbot
+    await this.#chatbotComponent.afterRender();
   }
 }
