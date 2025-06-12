@@ -54,7 +54,6 @@ class PencarianPresenter {
   async getAllAccomodations(filteredData) {
     try {
       let response = await getDataML(
-      let response = await getDataML(
         undefined,
         "/api/attractions",
         filteredData
@@ -80,7 +79,6 @@ class PencarianPresenter {
 
         console.log(response);
       }
-
 
       if (response) {
         // Parameter global
