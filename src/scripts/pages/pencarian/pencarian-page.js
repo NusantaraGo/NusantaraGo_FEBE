@@ -132,11 +132,11 @@ class PencarianPage {
       let angka_fixed = angka_probabilitas.toFixed(2);
       let html_span = ``;
 
-      if (angka_fixed > 4.8) {
+      if (angka_fixed > 4.6) {
         html_span = `<button class="mb-2 btn btn-outline-info rounded">Super Rekomendasi</button>`;
-      } else if (angka_fixed > 4.5) {
+      } else if (angka_fixed > 4.3) {
         html_span = `<button class="mb-2 btn btn-outline-primary rounded">Rekomendasi</button>`;
-      } else if (angka_fixed > 4) {
+      } else if (angka_fixed > 3.8) {
         html_span = ``;
       } else if (angka_fixed >= 3.4) {
         html_span = `<button class="mb-2 btn btn-outline-danger rounded">Tidak Rekomendasi</button>`;
@@ -147,6 +147,7 @@ class PencarianPage {
 
     // Generate HTML for current page items
     let html = "";
+    console.log(datas);
     for (const item of datas) {
       const validImage = await this.validateImage(item.nama, item.foto);
 

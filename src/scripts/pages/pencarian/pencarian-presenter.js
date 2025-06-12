@@ -38,6 +38,14 @@ class PencarianPresenter {
     return totalRating / data.length;
   }
 
+  /**
+   * Calculates the Bayesian rating of the given accommodation.
+   * @param {number} R - The average rating of the accommodation.
+   * @param {number} v - The number of reviews the accommodation has.
+   * @param {number} C - The average rating of all accommodations.
+   * @param {number} m - The minimum number of reviews required for an accommodation to be listed.
+   * @returns {number} - The Bayesian rating of the accommodation.
+   */
   async hitungSkorBayesian(R, v, C, m) {
     return (v / (v + m)) * R + (m / (v + m)) * C;
   }
@@ -76,8 +84,6 @@ class PencarianPresenter {
         response = response.sort((a, b) => {
           return b.skor - a.skor;
         });
-
-        console.log(response);
       }
 
       if (response) {
@@ -97,8 +103,6 @@ class PencarianPresenter {
         response = response.sort((a, b) => {
           return b.skor - a.skor;
         });
-
-        console.log(response);
       }
 
       return response;
