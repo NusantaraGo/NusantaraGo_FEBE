@@ -314,11 +314,13 @@ export async function getDataML(
     constructed from `CONFIG["ML_URL_API"]` and `params`. It includes additional configurations such
     as passing `filteredParams` as query parameters, setting a timeout for the request, and handling
     the response. */
+
     const response = await axios.get(`${base_url}${params}`, {
       params: filteredParams,
       timeout: timeout,
       contentType: "application/json",
     });
+
     if (response.status <= 400) {
       if (!response.data) {
         throw new Error("Data yang didapatkan kosong");
@@ -364,29 +366,39 @@ export async function getPlaceDetailById(id) {
     // Langkah 1: Ambil semua data wisata untuk menemukan nama berdasarkan ID
     const allPlaces = await getAllPlaces();
     if (!allPlaces || allPlaces.length === 0) {
-      throw new Error('Daftar tempat wisata tidak tersedia.');
+      throw new Error("Daftar tempat wisata tidak tersedia.");
     }
 
     // Konversi ID dari URL (string) ke angka untuk perbandingan
     const numericId = parseInt(id, 10);
-    const place = allPlaces.find(p => p.id === numericId);
+    const place = allPlaces.find((p) => p.id === numericId);
 
     if (!place) {
-      throw { status: 404, message: `Tempat wisata dengan ID "${id}" tidak ditemukan di daftar.` };
+      throw {
+        status: 404,
+        message: `Tempat wisata dengan ID "${id}" tidak ditemukan di daftar.`,
+      };
     }
 
     const placeName = place.nama;
     // encodeURIComponent penting untuk nama yang mengandung spasi atau karakter spesial
     const encodedName = encodeURIComponent(placeName);
-    const response = await axios.get(`${CONFIG.ML_URL_API}/api/attraction/${encodedName}`);
+    const response = await axios.get(
+      `${CONFIG.ML_URL_API}/api/attraction/${encodedName}`
+    );
 
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Gagal mengambil detail untuk ${placeName}. Status: ${response.status}`);
+      throw new Error(
+        `Gagal mengambil detail untuk ${placeName}. Status: ${response.status}`
+      );
     }
   } catch (error) {
-    console.error(`API Error saat proses mengambil detail untuk ID ${id}:`, error);
+    console.error(
+      `API Error saat proses mengambil detail untuk ID ${id}:`,
+      error
+    );
     throw error;
   }
 }
@@ -520,4 +532,3 @@ export async function getData(
     throw error;
   }
 }
-
