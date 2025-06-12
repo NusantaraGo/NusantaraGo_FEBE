@@ -173,7 +173,6 @@ class PencarianPage {
               <div class="rating-section">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
-                    ${kategori(item.skor)}
                     <span class="stars">${createStars(item.rating)}</span>
                     <span class="rating-text">${item.rating}</span>
                   </div>
