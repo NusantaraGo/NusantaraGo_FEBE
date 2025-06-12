@@ -147,7 +147,6 @@ class PencarianPage {
 
     // Generate HTML for current page items
     let html = "";
-    console.log(datas);
     for (const item of datas) {
       const validImage = await this.validateImage(item.nama, item.foto);
 
