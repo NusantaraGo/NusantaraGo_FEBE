@@ -26,7 +26,7 @@ class PencarianPage {
                         <select id='categories' name='categories' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
                           <option selected>--kategori--</option>
                         </select>
-                        <input type="number" id="min_rating" name='min_rating' min="0" max="5" class="form-control poppins-regular" step="0.1" style="max-width:70px">
+                        <input type="number" id="min_rating" name='min_rating' min="0" max="5" class="form-control poppins-regular" step="0.1" style="max-width:80px">
                         <input type="range" class="form-range" min="0" max="5" step="0.1" id="customRange1">
                       </div>
                       <div class="input-group col-12" style="height: 50px;">
