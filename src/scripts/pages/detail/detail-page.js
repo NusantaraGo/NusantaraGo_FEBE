@@ -1,5 +1,6 @@
-import { parseActivePathname } from '../../routes/url-parser'; 
+import { parseActivePathname } from '../../routes/url-parser';
 import DetailPresenter from './detail-presenter';
+import { errorHandling } from '../../utils'; // <-- Impor fungsi error handling
 
 class DetailPage {
   constructor() {
@@ -7,32 +8,56 @@ class DetailPage {
   }
 
   async render() {
-    const pathSegments = parseActivePathname(); 
-    const placeId = pathSegments.id;
-    // Instantiate the Presenter, passing the placeId.
-    // The presenter doesn't need a direct reference to this view instance
-    // if its only job is to return HTML for this render() method.
-    this._presenter = new DetailPresenter({ placeId });
-
-    const htmlContent = await this._presenter.buildHtmlForPage();
-    return htmlContent; // This HTML will be used by app.js to set innerHTML
+    // Metode render() hanya menampilkan kerangka loading awal
+    return `
+      <div class="container text-center mt-5">
+        <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="lead mt-3">Memeriksa autentikasi dan memuat data...</p>
+      </div>
+    `;
   }
 
   async afterRender() {
-    // This method is called by your app.js after the HTML from render()
-    // has been injected into the main content area.
-    // You can add any event listeners or DOM manipulations here if needed.
-    // For a static detail display, this might be empty or used for logging.
-    console.log('DetailPage: afterRender complete.');
+    const mainContent = document.querySelector('#main-content');
+    const pathSegments = parseActivePathname();
+    const placeId = pathSegments.id;
 
-    // Example: if you had interactive elements injected by the template
-    // const someButton = document.querySelector('#myDetailButton');
-    // if (someButton) {
-    //   someButton.addEventListener('click', () => {
-    //     // Handle click, possibly by calling a method on this._presenter
-    //     // this._presenter.handleSomeAction();
-    //   });
-    // }
+    // PERUBAHAN: Teruskan 'this' (instance DetailPage) sebagai 'view' ke Presenter
+    this._presenter = new DetailPresenter({ 
+      view: this, 
+      placeId: placeId 
+    });
+
+    // Minta presenter untuk membangun HTML, yang sekarang termasuk proses cek login
+    mainContent.innerHTML = await this._presenter.buildHtmlForPage();
+  }
+
+  // --- TAMBAHAN BARU: Metode untuk menangani error dari Presenter ---
+  // Sama seperti yang Anda punya di halaman lain
+  async errorHandlerFetch(error) {
+    console.error("Error di DetailPage:", error);
+    if (error.code === "ECONNABORTED") {
+      errorHandling(
+        "Timeout Error!",
+        "Terjadi kesalahan dalam pengiriman data. Mohon coba lagi."
+      );
+    } else if (error.response) {
+      const errJson = {
+        status: error.response.status,
+        message: error.response.data.message || 'Terjadi kesalahan dari server.',
+        error: error.response.data.error || 'Error Tidak Diketahui',
+      };
+
+      // Untuk error 401 (Unauthorized), presenter sudah menangani redirect,
+      // kita tidak perlu menampilkan popup error tambahan agar tidak duplikat.
+      if (errJson.status !== 401) {
+        errorHandling(errJson.error, errJson.message);
+      }
+    } else {
+      errorHandling("Error!", error.message);
+    }
   }
 }
 

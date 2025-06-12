@@ -119,6 +119,10 @@ export default class OtpPage {
     const url = new URL(window.location.href);
     const searchParams = url.hash.split("/")[2];
 
+    if (!searchParams) {
+      return window.location.reload();
+    }
+
     let isValid = true;
 
     // cek parameternya ada atau tidak
