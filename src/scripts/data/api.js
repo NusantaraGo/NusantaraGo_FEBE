@@ -314,8 +314,7 @@ export async function getDataML(
     constructed from `CONFIG["ML_URL_API"]` and `params`. It includes additional configurations such
     as passing `filteredParams` as query parameters, setting a timeout for the request, and handling
     the response. */
-
-    const response = await axios.get(`${base_url}${params}`, {
+    let response = await axios.get(`${base_url}${params}`, {
       params: filteredParams,
       timeout: timeout,
       contentType: "application/json",
