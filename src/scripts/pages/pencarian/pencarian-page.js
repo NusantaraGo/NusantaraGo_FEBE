@@ -18,7 +18,7 @@ class PencarianPage {
                     <h1 style="font-size: 36px; font-weight: 900">
                         Jelajahi Penginapan
                     </h1>
-                    <form id='pencarianForm' method="GET" class="search-form mt-4 row">
+                    <form id='filterForm' method="GET" class="search-form mt-4 row">
                       <div class="col-12 d-flex align-items-center gap-2 mb-4" style="height: 50px;">
                         <select id='provinces' name='provinces' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
                           <option selected>--provinsi--</option>
@@ -28,10 +28,13 @@ class PencarianPage {
                         </select>
                         <input type="number" id="min_rating" name='min_rating' min="0" max="5" class="form-control poppins-regular" step="0.1" style="max-width:70px">
                         <input type="range" class="form-range" min="0" max="5" step="0.1" id="customRange1">
+                        <button type="submit" class="btn btn-custom">Cari Filter</button>
                       </div>
+                    </form>
+                    <form id='searchNameForm' method="GET" class="search-form row">
                       <div class="input-group col-12" style="height: 50px;">
                           <input type="text" id="pencarian" name='q' class="form-control poppins-regular" placeholder="Cari penginapan berdasarkan nama wisata...">
-                          <button type="submit" class="btn btn-custom">Cari</button>
+                          <button type="submit" class="btn btn-custom">Cari Nama</button>
                       </div>
                     </form>
                 </div>
@@ -227,7 +230,7 @@ class PencarianPage {
    */
   async calculateCurrentPages(datas, data) {
     // Calculate the current page items (3 items per page)
-    const itemsPerPage = 3;
+    const itemsPerPage = 12;
     const startIndex = (data[0] - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentItems = datas.slice(startIndex, endIndex);
@@ -266,7 +269,7 @@ class PencarianPage {
     // buat pagination
     $("#pagination-container").pagination({
       dataSource: Array.from(
-        { length: Math.ceil(allAccommodations.length / 3) },
+        { length: Math.ceil(allAccommodations.length / 12) },
         (_, i) => i + 1
       ),
       pageRange: 0,
@@ -503,7 +506,14 @@ class PencarianPage {
     // end
 
     // Bind event submit form
-    $("#pencarianForm").on("submit", async (event) => {
+    $("#filterForm").on("submit", async (event) => {
+      event.preventDefault();
+      const data = await this.submitTriggerEvent(event);
+      await this.handlePagination(data);
+    });
+
+    // Bind event submit form for name search
+    $("#searchNameForm").on("submit", async (event) => {
       event.preventDefault();
       const data = await this.submitTriggerEvent(event);
       await this.handlePagination(data);

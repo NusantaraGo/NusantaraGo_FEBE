@@ -77,43 +77,47 @@ export default class LoginPage {
     const password = document.getElementById("password");
     const masukButton = document.getElementById("masukButton");
 
+    console.log("Login Form element:", loginForm);
+    console.log("Login Button element:", masukButton);
+
     // submit button
     const handleSubmit = (event) => {
-      if (event.target.id === "masukButton") {
-        const inputs = [username, password];
-        let isValid = true;
+      event.preventDefault();
+      console.log("Login handleSubmit called!");
 
-        // validasi input
-        inputs.forEach((input) => {
-          if (!isValid) {
-            return;
-          }
-          // jika kosong
-          if (input.value.trim() === "") {
-            errorHandling(
-              "Terjadi Kesalahan!",
-              `input ${input.id} harus diisi!`
-            );
-            isValid = false;
-            return;
-          }
-        });
+      const inputs = [username, password];
+      let isValid = true;
 
-        // jika terisi semua
-
-        if (isValid) {
-          const data = {
-            username: username.value.trim().toLowerCase(),
-            password: password.value,
-          };
-
-          // kirimkan ke bagian presenter
-          this.#presenterPage = new LoginPresenter({
-            loginPage: this,
-          });
-          // kirim kan keapi melalui presenter
-          if (this.#presenterPage) this.#presenterPage.sendDataToAPI(data);
+      // validasi input
+      inputs.forEach((input) => {
+        if (!isValid) {
+          return;
         }
+        // jika kosong
+        if (input.value.trim() === "") {
+          errorHandling(
+            "Terjadi Kesalahan!",
+            `input ${input.id} harus diisi!`
+          );
+          isValid = false;
+          return;
+        }
+      });
+
+      // jika terisi semua
+
+      if (isValid) {
+        const data = {
+          username: username.value.trim().toLowerCase(),
+          password: password.value,
+        };
+
+        // kirimkan ke bagian presenter
+        this.#presenterPage = new LoginPresenter({
+          loginPage: this,
+        });
+        // kirim kan keapi melalui presenter
+        if (this.#presenterPage) this.#presenterPage.sendDataToAPI(data);
       }
     };
     // Event listener untuk form submit (Enter)

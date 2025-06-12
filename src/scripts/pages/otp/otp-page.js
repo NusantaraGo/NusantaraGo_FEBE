@@ -21,7 +21,7 @@ export default class OtpPage {
                         </div>
                         <form>
                             <h3 class="poppins-bold" style="color: #b57547;">OTP</h3>
-                            <p class="text-muted mb-2">Masukkan kode OTP 6 digit yang telah dikirim ke: <span id='email_text' class='poppins-semibold'>s*******@gmail.com</span></p>
+                            <p class="text-muted mb-2">Masukkan kode OTP 6 digit yang telah dikirim ke: <span id='email_text' class='poppins-semibold'></span></p>
                             
                             <!-- input Otp -->
                             <div class="form-outline mb-5">
@@ -179,9 +179,20 @@ export default class OtpPage {
     const otpForm = document.querySelector("form");
     const display = document.getElementById("countdown_time_otp");
     const titleTime = display.previousElementSibling;
+    const emailTextSpan = document.getElementById("email_text");
+
+    // Tampilkan email di UI
+    const { searchParams: emailFromUrl, isValid } = this.checkSearchParams();
+    if (isValid && emailFromUrl) {
+      console.log("Email from URL:", emailFromUrl);
+      emailTextSpan.textContent = this.obfuscateEmail(emailFromUrl);
+    } else {
+      emailTextSpan.textContent = "alamat email tidak ditemukan";
+    }
 
     // submit button
     const handleSubmit = (event) => {
+      event.preventDefault();
       console.log(event.submitter?.id);
       if (event.submitter?.id === "verifikasiOtpButton") {
         // chekc params
@@ -328,5 +339,33 @@ export default class OtpPage {
     if (statusCode >= 200 && statusCode <= 400 && error === null) {
       return await successHandling(message_title, detail_message);
     }
+  }
+
+  /**
+   * Mengaburkan bagian tengah alamat email.
+   * Contoh: 'john.doe@example.com' menjadi 'j****e@example.com'
+   * @param {string} email - Alamat email lengkap.
+   * @returns {string} Alamat email yang teraburkan.
+   */
+  obfuscateEmail(email) {
+    if (!email || typeof email !== "string") {
+      return "";
+    }
+    const atIndex = email.indexOf("@");
+    if (atIndex <= 1) {
+      return email; // Email terlalu pendek untuk di-obfuscate atau tidak valid
+    }
+    const username = email.substring(0, atIndex);
+    const domain = email.substring(atIndex);
+
+    if (username.length <= 2) {
+      return email; // Username terlalu pendek untuk di-obfuscate
+    }
+
+    const firstChar = username[0];
+    const lastChar = username[username.length - 1];
+    const obfuscatedUsername = firstChar + "*****" + lastChar; // Menggunakan 5 bintang
+
+    return obfuscatedUsername + domain;
   }
 }

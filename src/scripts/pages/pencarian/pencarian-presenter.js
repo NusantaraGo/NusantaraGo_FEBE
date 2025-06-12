@@ -39,12 +39,51 @@ class PencarianPresenter {
 
   async getAllAccomodations(filteredData) {
     try {
-      const response = await getDataML(
-        undefined,
-        "/api/attractions",
-        filteredData
-      );
-      return response;
+      if (filteredData && filteredData.q) {
+        // Langkah 1: Panggil API rekomendasi ML
+        const mlRecommendations = await getDataML(
+          undefined,
+          "/api/recommendations/content",
+          { name: filteredData.q }
+        );
+        console.log("ML Recommendations response:", mlRecommendations);
+
+        if (!mlRecommendations || mlRecommendations.length === 0) {
+          console.log("No ML recommendations found. Returning empty array.");
+          return [];
+        }
+
+        // Langkah 2: Ekstrak ID dari rekomendasi ML
+        const recommendedIds = mlRecommendations.map((item) => item.id);
+        console.log("Recommended IDs:", recommendedIds);
+
+        // Langkah 3: Panggil API attractions untuk mendapatkan semua data lengkap
+        const allAttractions = await getDataML(undefined, "/api/attractions");
+        console.log("All Attractions response:", allAttractions);
+
+        if (!allAttractions || allAttractions.length === 0) {
+          console.log(
+            "No attractions found from /api/attractions. Returning empty array."
+          );
+          return [];
+        }
+
+        // Langkah 4: Filter data attractions berdasarkan ID rekomendasi
+        const filteredAttractions = allAttractions.filter((attraction) =>
+          recommendedIds.includes(attraction.id)
+        );
+        console.log("Filtered Attractions:", filteredAttractions);
+
+        return filteredAttractions;
+      } else {
+        // Jika tidak ada query pencarian, tampilkan semua data attractions
+        const response = await getDataML(
+          undefined,
+          "/api/attractions",
+          filteredData // tetap lewatkan filter data yang ada (kategori, provinsi, rating)
+        );
+        return response;
+      }
     } catch (error) {
       await this.#pencarianPage.errorHandlerFetch(error);
       return [];

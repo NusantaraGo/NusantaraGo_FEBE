@@ -26,6 +26,7 @@ class App {
        */
       updateDOM: async () => {
         this.#content.innerHTML = await page.render();
+        console.log("HTML rendered into main-content!");
         await page.afterRender();
       },
     });

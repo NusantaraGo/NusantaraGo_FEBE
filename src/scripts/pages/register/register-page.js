@@ -20,7 +20,7 @@ export default class RegisterPage {
                         <div class="text-center mb-3">
                             <img src="images/logo.png" style="width: 185px;" alt="logo">
                         </div>
-                        <form>
+                        <form id="registerForm">
                             <h3 class="poppins-bold" style="color: #b57547;">Daftar Akun</h3>
                             <!-- Username input -->
                             <div class="form-outline mb-3">
@@ -88,71 +88,73 @@ export default class RegisterPage {
    * @return {Promise<void>}
    */
   async afterRender() {
+    console.log("After render called!");
     // hapus navbar dan footer
     hideNavbarAndFooter();
 
-    const submitForm = document.querySelector("form");
+    const submitForm = document.querySelector("#registerForm");
     const registerButton = document.querySelector("#registerButton");
+
+    console.log("submitForm element:", submitForm);
+    console.log("registerButton element:", registerButton);
 
     // Submit button
     const handleSubmit = (event) => {
-      if (event.target.id === "registerButton") {
-        const username = document.querySelector("#username");
-        const email = document.querySelector("#email");
-        const password = document.querySelector("#password");
-        const password2 = document.querySelector("#password2");
-        const inputs = [username, email, password, password2];
-        let isValid = true;
-        // validasi input
-        inputs.forEach((input) => {
-          if (!isValid) {
-            return;
-          }
-          // jika kosong
-          if (input.value.trim() === "") {
-            errorHandling(
-              "Terjadi Kesalahan!",
-              `input ${input.id} harus diisi!`
-            );
-            isValid = false;
-            return;
-          }
+      console.log("Handle submit called!");
+      event.preventDefault();
+
+      const username = document.querySelector("#username");
+      const email = document.querySelector("#email");
+      const password = document.querySelector("#password");
+      const password2 = document.querySelector("#password2");
+      const inputs = [username, email, password, password2];
+      let isValid = true;
+      // validasi input
+      inputs.forEach((input) => {
+        if (!isValid) {
+          return;
+        }
+        // jika kosong
+        if (input.value.trim() === "") {
+          errorHandling("Terjadi Kesalahan!", `input ${input.id} harus diisi!`);
+          isValid = false;
+          return;
+        }
+      });
+      // end
+      // cek email
+      if (isValid) {
+        if (!this.isValidEmail(email.value.trim())) {
+          errorHandling("Terjadi Kesalahan!", "Email tidak valid!");
+          isValid = false;
+        }
+      }
+      // end
+      // password check with confirm password check
+      if (isValid) {
+        if (password.value !== password2.value) {
+          errorHandling(
+            "Terjadi Kesalahan!",
+            "Password dan Konfirmasi Password wajib sama!"
+          );
+          isValid = false;
+        }
+      }
+      // end
+      // jika terisi semua
+      if (isValid) {
+        const data = {
+          username: username.value.trim().toLowerCase(),
+          email: email.value.trim(),
+          password: password.value,
+          password2: password2.value,
+        };
+        // kirimkan ke bagian presenter
+        this.#presenterPage = new RegisterPresenter({
+          registerPage: this,
         });
-        // end
-        // cek email
-        if (isValid) {
-          if (!this.isValidEmail(email.value.trim())) {
-            errorHandling("Terjadi Kesalahan!", "Email tidak valid!");
-            isValid = false;
-          }
-        }
-        // end
-        // password check with confirm password check
-        if (isValid) {
-          if (password.value !== password2.value) {
-            errorHandling(
-              "Terjadi Kesalahan!",
-              "Password dan Konfirmasi Password wajib sama!"
-            );
-            isValid = false;
-          }
-        }
-        // end
-        // jika terisi semua
-        if (isValid) {
-          const data = {
-            username: username.value.trim().toLowerCase(),
-            email: email.value.trim(),
-            password: password.value,
-            password2: password2.value,
-          };
-          // kirimkan ke bagian presenter
-          this.#presenterPage = new RegisterPresenter({
-            registerPage: this,
-          });
-          // kirim kan keapi melalui presenter
-          this.#presenterPage.sendDataToAPI(data);
-        }
+        // kirim kan keapi melalui presenter
+        this.#presenterPage.sendDataToAPI(data);
       }
     };
     submitForm.addEventListener("submit", handleSubmit);
