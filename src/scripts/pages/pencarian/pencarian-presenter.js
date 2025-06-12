@@ -85,7 +85,7 @@ class PencarianPresenter {
         const mean_of_rating = await this.hitungRataRataRating(response);
         const jumlah_review = 50;
 
-        for (data_accomodation of response) {
+        for (const data_accomodation of response) {
           data_accomodation.skor = await this.hitungSkorBayesian(
             data_accomodation.rating,
             data_accomodation.jumlah_review,
