@@ -135,11 +135,11 @@ class PencarianPage {
       if (angka_fixed > 4.8) {
         html_span = `<button class="mb-2 btn btn-outline-info rounded">Super Rekomendasi</button>`;
       } else if (angka_fixed > 4.5) {
-        html_span = `<button class="btn btn-outline-primary rounded">Rekomendasi</button>`;
+        html_span = `<button class="mb-2 btn btn-outline-primary rounded">Rekomendasi</button>`;
       } else if (angka_fixed > 4) {
         html_span = ``;
       } else if (angka_fixed >= 3.4) {
-        html_span = `<button class="btn btn-outline-danger rounded">Tidak Rekomendasi</button>`;
+        html_span = `<button class="mb-2 btn btn-outline-danger rounded">Tidak Rekomendasi</button>`;
       }
 
       return html_span;
