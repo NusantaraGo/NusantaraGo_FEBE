@@ -32,7 +32,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto" id="auth-links">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#/">Home</a>
           </li>
@@ -42,7 +42,6 @@
           <li class="nav-item">
             <a class="nav-link" href="#/profile">Profile Saya</a>
           </li>
-
         </ul>
 
         <!-- Login -->
@@ -50,6 +49,14 @@
           <li class="nav-item d-flex gap-2">
             <a class="nav-link active btn" aria-current="page" href="#/register">Daftar</a>
             <a class="btn btn-custom" aria-current="page" href="#/login">Masuk</a>
+          </li>
+        </ul>
+
+        <!-- User Info (Hidden by default) -->
+        <ul class="navbar-nav ms-auto d-none" id="user-links">
+          <li class="nav-item d-flex gap-2 align-items-center">
+            <a class="nav-link active" aria-current="page" href="#/profile">Profile Saya</a>
+            <button class="btn btn-danger" id="logout-button">Logout</button>
           </li>
         </ul>
       </div>
