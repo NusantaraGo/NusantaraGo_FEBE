@@ -52,5 +52,9 @@ module.exports = {
     new webpack.ProvidePlugin({
       process: "process/browser.js", // agar 'process' dikenali oleh browser
     }),
+    new webpack.DefinePlugin({
+      "process.env.API_URL1": JSON.stringify(process.env.API_URL1),
+      "process.env.API_URL2": JSON.stringify(process.env.API_URL2),
+    }),
   ],
 };
