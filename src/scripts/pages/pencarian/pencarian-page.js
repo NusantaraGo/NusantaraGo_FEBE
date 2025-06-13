@@ -1,16 +1,24 @@
 import { visibleNavbarAndFooter } from "../../utils/auth";
 import PencarianPresenter from "./pencarian-presenter";
 import { errorHandling, successHandling } from "../../utils";
+import ChatbotComponent from "../../components/chatbot_comp";
 
 class PencarianPage {
   #presenterPage = null;
   #html = null;
+  #chatbotComponent = null;
+
+  constructor() {
+    this.#chatbotComponent = new ChatbotComponent();
+  }
+
   /**
    * Render the Pencarian page HTML.
    *
    * @returns {string} The rendered HTML of Pencarian page.
    */
   async render() {
+    const chatbotHtml = await this.#chatbotComponent.render();
     return `
       <section id='pencarian' class="container text-center text-lg-start" style='padding-top: 4rem;'>
         <div class="container">
@@ -50,6 +58,7 @@ class PencarianPage {
                 </div>
         </div>
       </section>
+      ${chatbotHtml}
     `;
   }
 
@@ -517,6 +526,9 @@ class PencarianPage {
         $("#customRange1").val(val);
       }
     });
+
+    // Render and initialize chatbot
+    await this.#chatbotComponent.afterRender();
     // end
 
     // Bind event submit form

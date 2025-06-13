@@ -69,6 +69,7 @@ export default class HomePage {
           </div>
         </div>
       </section>
+      ${chatbotHtml}
     `;
   }
 
