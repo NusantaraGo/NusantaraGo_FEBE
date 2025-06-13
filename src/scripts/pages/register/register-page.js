@@ -55,7 +55,7 @@ export default class RegisterPage {
                                     Disini</a></p>
 
                             <br><br>
-                            <footer class="text-center text-muted"> ©2023 NusantaraGo</footer>
+                            <footer class="text-center text-muted"> ©2025 NusantaraGo</footer>
                         </form>
                     </div>
                 </div>

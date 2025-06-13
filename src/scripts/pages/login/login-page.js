@@ -45,7 +45,7 @@ export default class LoginPage {
                             <p class="text-center">Belum punya akun? <a href="#/register" style='color: #548895'>Daftar Disini</a></p>
 
                             <br><br>
-                            <footer class="text-center text-muted"> ©2023 NusantaraGo</footer>
+                            <footer class="text-center text-muted"> ©2025 NusantaraGo</footer>
                         </form>
                     </div>
                 </div>
