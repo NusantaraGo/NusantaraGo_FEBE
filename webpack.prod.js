@@ -42,4 +42,7 @@ module.exports = merge(common, {
       "process.env.API_URL2": JSON.stringify(process.env.API_URL2),
     }),
   ],
+  performance: {
+    hints: false,
+  },
 });
