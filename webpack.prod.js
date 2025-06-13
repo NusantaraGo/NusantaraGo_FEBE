@@ -33,5 +33,12 @@ module.exports = merge(common, {
       },
     ],
   },
-  plugins: [new CleanWebpackPlugin(), new MiniCssExtractPlugin()],
+  plugins: [
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      "process.env.API_URL1": JSON.stringify(process.env.API_URL1),
+      "process.env.API_URL2": JSON.stringify(process.env.API_URL2),
+    }),
+  ],
 });
