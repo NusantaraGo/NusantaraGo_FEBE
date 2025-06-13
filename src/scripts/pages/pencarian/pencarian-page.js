@@ -24,7 +24,7 @@ class PencarianPage {
         <div class="container">
                 <div class="jelajahi">
                     <h1 style="font-size: 36px; font-weight: 900">
-                        Jelajahi Penginapan
+                        Jelajahi Tempat Wisata
                     </h1>
                     <form id='pencarianForm' method="GET" class="search-form mt-4 row">
                       <div class="col-12 d-flex align-items-center gap-2 mb-4" style="height: 50px;">
