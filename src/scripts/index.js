@@ -22,7 +22,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   await app.renderPage();
 
+  // Update navbar UI on initial load
+  const userData = await checkUserAuth();
+  updateNavbarUI(userData);
+
+  // Add event listener for logout button
+  const logoutButton = document.getElementById("logout-button");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", async () => {
+      await logoutUser();
+    });
+  }
+
   window.addEventListener("hashchange", async () => {
     await app.renderPage();
+    // Update navbar UI on hash change
+    const newUserData = await checkUserAuth();
+    updateNavbarUI(newUserData);
   });
 });
