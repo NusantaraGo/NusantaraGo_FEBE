@@ -14,7 +14,11 @@ import "../styles/styles.css";
 // pagination
 import "paginationjs/dist/pagination.css";
 
+//app
 import App from "./pages/app";
+
+// check auth dan ubah jadi logout
+import { checkUserAuth, updateNavbarUI, logoutUser } from "./utils/auth";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const app = new App({
