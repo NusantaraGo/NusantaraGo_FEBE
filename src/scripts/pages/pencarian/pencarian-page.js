@@ -26,7 +26,7 @@ class PencarianPage {
                         <select id='categories' name='categories' class="form-select w-25 poppins-medium" aria-label="Select groupBy for search">
                           <option selected>--kategori--</option>
                         </select>
-                        <input type="number" id="min_rating" name='min_rating' min="0" max="5" class="form-control poppins-regular" step="0.1" style="max-width:70px">
+                        <input type="number" id="min_rating" name='min_rating' min="0" max="5" class="form-control poppins-regular" step="0.1" style="max-width:80px">
                         <input type="range" class="form-range" min="0" max="5" step="0.1" id="customRange1">
                       </div>
                       <div class="input-group col-12" style="height: 50px;">
@@ -132,14 +132,14 @@ class PencarianPage {
       let angka_fixed = angka_probabilitas.toFixed(2);
       let html_span = ``;
 
-      if (angka_fixed > 4) {
-        html_span = `<span class="border border-info rounded">Super Rekomendasi</span>`;
-      } else if (angka_fixed > 3) {
-        html_span = `<span class="border border-primary rounded">Rekomendasi</span>`;
-      } else if (angka_fixed > 2) {
+      if (angka_fixed > 4.6) {
+        html_span = `<button class="mb-2 btn btn-outline-info rounded">Super Rekomendasi</button>`;
+      } else if (angka_fixed > 4.3) {
+        html_span = `<button class="mb-2 btn btn-outline-primary rounded">Rekomendasi</button>`;
+      } else if (angka_fixed > 3.8) {
         html_span = ``;
-      } else if (angka_fixed >= 0) {
-        html_span = `<span class="border border-danger rounded">Tidak Rekomendasi</span>`;
+      } else if (angka_fixed >= 3.4) {
+        html_span = `<button class="mb-2 btn btn-outline-danger rounded">Tidak Rekomendasi</button>`;
       }
 
       return html_span;
@@ -147,6 +147,7 @@ class PencarianPage {
 
     // Generate HTML for current page items
     let html = "";
+    console.log(datas);
     for (const item of datas) {
       const validImage = await this.validateImage(item.nama, item.foto);
 
@@ -159,6 +160,7 @@ class PencarianPage {
       }.jpg">
             </div>
             <div class="card-body">
+             ${kategori(item.skor)}
               <h5 class="card-title text-justify text-truncate">${
                 item.nama
               }</h5>
@@ -171,7 +173,6 @@ class PencarianPage {
               <div class="rating-section">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
-                    ${kategori(item.skor)}
                     <span class="stars">${createStars(item.rating)}</span>
                     <span class="rating-text">${item.rating}</span>
                   </div>

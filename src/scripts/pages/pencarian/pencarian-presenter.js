@@ -38,6 +38,14 @@ class PencarianPresenter {
     return totalRating / data.length;
   }
 
+  /**
+   * Calculates the Bayesian rating of the given accommodation.
+   * @param {number} R - The average rating of the accommodation.
+   * @param {number} v - The number of reviews the accommodation has.
+   * @param {number} C - The average rating of all accommodations.
+   * @param {number} m - The minimum number of reviews required for an accommodation to be listed.
+   * @returns {number} - The Bayesian rating of the accommodation.
+   */
   async hitungSkorBayesian(R, v, C, m) {
     return (v / (v + m)) * R + (m / (v + m)) * C;
   }
@@ -62,9 +70,9 @@ class PencarianPresenter {
       if (response) {
         // Parameter global
         const mean_of_rating = await this.hitungRataRataRating(response);
-        const jumlah_review = 50;
+        const jumlah_review = 100;
 
-        for (data_accomodation of response) {
+        for (const data_accomodation of response) {
           data_accomodation.skor = await this.hitungSkorBayesian(
             data_accomodation.rating,
             data_accomodation.jumlah_review,
@@ -76,8 +84,25 @@ class PencarianPresenter {
         response = response.sort((a, b) => {
           return b.skor - a.skor;
         });
+      }
 
-        console.log(response);
+      if (response) {
+        // Parameter global
+        const mean_of_rating = await this.hitungRataRataRating(response);
+        const jumlah_review = 50;
+
+        for (const data_accomodation of response) {
+          data_accomodation.skor = await this.hitungSkorBayesian(
+            data_accomodation.rating,
+            data_accomodation.jumlah_review,
+            mean_of_rating,
+            jumlah_review
+          );
+        }
+
+        response = response.sort((a, b) => {
+          return b.skor - a.skor;
+        });
       }
 
       return response;
@@ -112,6 +137,20 @@ class PencarianPresenter {
       await this.#pencarianPage.errorHandlerFetch(error);
       return false;
     }
+  }
+
+  /**
+   * Calculates the average rating of the given accommodations.
+   * @param {Array} data - An array of accommodations.
+   * @returns {number} - The average rating of the accommodations.
+   */
+  async hitungRataRataRating(data) {
+    const totalRating = data.reduce((sum, p) => sum + p.rating, 0);
+    return totalRating / data.length;
+  }
+
+  async hitungSkorBayesian(R, v, C, m) {
+    return (v / (v + m)) * R + (m / (v + m)) * C;
   }
 }
 
