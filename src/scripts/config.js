@@ -1,3 +1,4 @@
+console.log(process.env.API_URL1, process.env.API_URL2);
 const CONFIG = {
   AUTH_URL_API: process.env.API_URL1, //untuk api backend
   ML_URL_API: process.env.API_URL2,
