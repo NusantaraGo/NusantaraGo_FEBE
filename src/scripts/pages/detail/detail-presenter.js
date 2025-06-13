@@ -1,5 +1,5 @@
-import { getPlaceDetailById } from '../../data/api';
-import CONFIG from '../../config';
+import { getPlaceDetailById } from "../../data/api";
+import CONFIG from "../../config";
 
 class DetailPresenter {
   constructor({ placeId }) {
@@ -8,26 +8,29 @@ class DetailPresenter {
 
   _createDetailHtml(place) {
     const {
-      nama, provinsi, rating, jumlah_review, deskripsi, foto, kategori, koordinat,
+      nama,
+      provinsi,
+      rating,
+      jumlah_review,
+      deskripsi,
+      foto,
+      kategori,
+      koordinat,
     } = place;
     const { latitude, longitude } = koordinat;
 
-    const imagePath = foto.startsWith('/') ? foto.slice(1) : foto;
+    const imagePath = foto.startsWith("/") ? foto.slice(1) : foto;
     const imageUrl = `${CONFIG.ML_URL_API}/${imagePath}`;
 
     const bbox_pad = 0.005;
-    const bbox = `${longitude - bbox_pad},${latitude - bbox_pad},${longitude + bbox_pad},${latitude + bbox_pad}`;
+    const bbox = `${longitude - bbox_pad},${latitude - bbox_pad},${
+      longitude + bbox_pad
+    },${latitude + bbox_pad}`;
     const osmEmbedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${latitude},${longitude}`;
     const osmUrl = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=15/${latitude}/${longitude}`;
 
     return `
       <div class="container mt-4 mb-5">
-
-       <div class="mb-4">
-          <a href="#/pencarian" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Kembali ke Pencarian
-          </a>
-        </div>  
         <div class="detail-page-card">
           <div class="row g-0">
             <div class="col-lg-7">
@@ -49,7 +52,11 @@ class DetailPresenter {
                   <span class="review-count">(${jumlah_review} reviews)</span>
                 </div>
                 <div class="category-section mt-3">
-                  ${kategori.map(cat => `<span class="badge bg-success">${cat}</span>`).join(' ')}
+                  ${kategori
+                    .map(
+                      (cat) => `<span class="badge bg-success">${cat}</span>`
+                    )
+                    .join(" ")}
                 </div>
               </div>
             </div>
@@ -79,8 +86,10 @@ class DetailPresenter {
     return `
       <div class="container mt-5 text-center">
         <div class="alert alert-danger" role="alert">
-          <h4 class="alert-heading">Oops! Terjadi Kesalahan (Error ${status || ''})</h4>
-          <p>${message || 'Gagal memuat detail tempat wisata.'}</p>
+          <h4 class="alert-heading">Oops! Terjadi Kesalahan (Error ${
+            status || ""
+          })</h4>
+          <p>${message || "Gagal memuat detail tempat wisata."}</p>
           <hr>
           <p class="mb-0">Silakan kembali ke <a href="#/pencarian" class="alert-link">Halaman Pencarian</a>.</p>
         </div>
@@ -90,19 +99,26 @@ class DetailPresenter {
 
   async buildHtmlForPage() {
     if (!this._placeId) {
-      return this._createErrorHtml(400, 'ID tempat wisata tidak valid atau tidak ditemukan di URL.');
+      return this._createErrorHtml(
+        400,
+        "ID tempat wisata tidak valid atau tidak ditemukan di URL."
+      );
     }
 
     try {
+      // PERBAIKAN UTAMA DI SINI:
+      // getPlaceDetailById sudah langsung mengembalikan objek data, bukan seluruh respons axios.
       const placeData = await getPlaceDetailById(this._placeId);
 
       if (placeData) {
         return this._createDetailHtml(placeData);
       } else {
-        throw new Error('Format data dari API tidak sesuai atau data kosong.');
+        throw new Error("Format data dari API tidak sesuai atau data kosong.");
       }
     } catch (error) {
-      const errorMessage = error.response ? error.response.data.error : error.message;
+      const errorMessage = error.response
+        ? error.response.data.error
+        : error.message;
       const errorStatus = error.response ? error.response.status : 500;
       return this._createErrorHtml(errorStatus, errorMessage);
     }
